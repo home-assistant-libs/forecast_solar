@@ -1,0 +1,1 @@
+## Python API fetching Solarpanels forecast information.
