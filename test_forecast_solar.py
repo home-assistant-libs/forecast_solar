@@ -1,21 +1,26 @@
-
-import aiohttp
 import asyncio
 
-import forecast_solar
+from forecast_solar import Estimate, ForecastSolar
 
 async def main():
     """ Simple function to test the output. """
-    async with aiohttp.ClientSession() as client:
+    async with ForecastSolar(
+        latitude=52.16,
+        longitude=4.47,
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        damping=0
+    ) as forecast:
+        estimate: Estimate = await forecast.estimate()
 
-        lat = 52.568690
-        lon = 4.570470
-        dec = 20
-        az = 10
-        kwp = 2.400
+        print(f"energy_production_today: {estimate.energy_production_today}")
+        print(f"energy_production_tomorrow: {estimate.energy_production_tomorrow}")
+        print(f"power_production_now: {estimate.power_production_now}")
+        print(f"power_production_next_hour: {estimate.power_production_next_hour}")
+        print(f"energy_current_hour: {estimate.energy_current_hour}")
+        print(f"energy_next_hour: {estimate.energy_next_hour}")
 
-        result = await forecast_solar.get_request(lat, lon, dec, az, kwp, client)
-        print(result)
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
