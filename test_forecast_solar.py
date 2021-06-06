@@ -13,7 +13,7 @@ async def main():
         damping=0
     ) as forecast:
         estimate: Estimate = await forecast.estimate()
-        # print(estimate)
+        print(estimate)
 
         print(f'energy_production_today: {estimate.energy_production_today}')
         print(f'energy_production_tomorrow: {estimate.energy_production_tomorrow}')
@@ -23,6 +23,7 @@ async def main():
         print(f'power_production_next_24hours: {estimate.power_production_next_24hours}')
         print(f'energy_current_hour: {estimate.energy_current_hour}')
         print(f'energy_next_hour: {estimate.energy_next_hour}')
+        print(f'timezone: {estimate.timezone}')
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

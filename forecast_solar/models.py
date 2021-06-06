@@ -18,6 +18,12 @@ class Estimate:
     kwh_days: dict[datetime, float]
     kwh_hours: dict[datetime, float]
     watts: dict[datetime, int]
+    api_timezone: str
+
+    @property
+    def timezone(self) -> str:
+        """Return API timezone information."""
+        return self.api_timezone
 
     @property
     def energy_production_today(self) -> float:
@@ -130,4 +136,5 @@ class Estimate:
                 datetime.fromisoformat(d).astimezone(timezone.utc): w
                 for d, w in data["result"]["watts"].items()
             },
+            api_timezone=data["message"]["info"]["timezone"],
         )
