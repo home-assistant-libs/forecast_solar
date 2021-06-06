@@ -90,7 +90,7 @@ class Estimate:
         """Return the estimated energy production for the current hour."""
         now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
         for date, kwh in self.kwh_hours.items():
-            if date > now:
+            if date > now and now.day == date.day:
                 return kwh
         return 0
 
@@ -101,7 +101,7 @@ class Estimate:
             hours=1
         )
         for date, kwh in self.kwh_hours.items():
-            if date > nxt:
+            if date > nxt and date.day == nxt.day:
                 return kwh
         return 0
 
