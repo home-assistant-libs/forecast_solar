@@ -111,7 +111,7 @@ class ForecastSolar:
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
             params={"time": "iso8601", "damping": str(self.damping)},
         )
-        return Estimate.from_dict(data["result"])
+        return Estimate.from_dict(data)
 
     async def close(self) -> None:
         """Close open client session."""
