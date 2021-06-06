@@ -73,6 +73,19 @@ class Estimate:
         return 0
 
     @property
+    def power_production_next_12hours(self) -> int:
+        """Return estimated power production +12 hours."""
+        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
+            hours=12
+        )
+        value = 0
+        for date, watt in self.watts.items():
+            if date > nxt:
+                return value
+            value = watt
+        return 0
+
+    @property
     def power_production_next_24hours(self) -> int:
         """Return estimated power production +24 hours."""
         nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
@@ -90,7 +103,7 @@ class Estimate:
         """Return the estimated energy production for the current hour."""
         now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
         for date, kwh in self.kwh_hours.items():
-            if date > now:
+            if date > now and now.day == date.day:
                 return kwh
         return 0
 
@@ -101,7 +114,7 @@ class Estimate:
             hours=1
         )
         for date, kwh in self.kwh_hours.items():
-            if date > nxt:
+            if date > nxt and date.day == nxt.day:
                 return kwh
         return 0
 
