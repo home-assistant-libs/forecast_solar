@@ -20,6 +20,7 @@ async def main():
         print(f'power_production_now: {estimate.power_production_now}')
         print(f'power_production_next_hour: {estimate.power_production_next_hour}')
         print(f'power_production_next_6hours: {estimate.power_production_next_6hours}')
+        print(f'power_production_next_12hours: {estimate.power_production_next_12hours}')
         print(f'power_production_next_24hours: {estimate.power_production_next_24hours}')
         print(f'energy_current_hour: {estimate.energy_current_hour}')
         print(f'energy_next_hour: {estimate.energy_next_hour}')
