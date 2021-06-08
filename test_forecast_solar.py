@@ -18,6 +18,8 @@ async def main():
         print(f'energy_production_today: {estimate.energy_production_today}')
         print(f'energy_production_tomorrow: {estimate.energy_production_tomorrow}')
         print(f'power_production_now: {estimate.power_production_now}')
+        print(f'power_highest_peak_time_today: {estimate.power_highest_peak_time_today}')
+        print(f'power_highest_peak_time_tomorrow: {estimate.power_highest_peak_time_tomorrow}')
         print(f'power_production_next_hour: {estimate.power_production_next_hour}')
         print(f'power_production_next_6hours: {estimate.power_production_next_6hours}')
         print(f'power_production_next_12hours: {estimate.power_production_next_12hours}')

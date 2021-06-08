@@ -47,6 +47,26 @@ class Estimate:
         return 0
 
     @property
+    def power_highest_peak_time_today(self) -> datetime:
+        """Return datetime with highest power production moment today."""
+        now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
+        value = max(watt for date, watt in self.watts.items() if date.day == now.day)
+        for date, watt, in self.watts.items():
+            if watt == value:
+                return date
+
+    @property
+    def power_highest_peak_time_tomorrow(self) -> datetime:
+        """Return datetime with highest power production moment tomorrow."""
+        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
+            hours=24
+        )
+        value = max(watt for date, watt in self.watts.items() if date.day == nxt.day)
+        for date, watt, in self.watts.items():
+            if watt == value:
+                return date
+
+    @property
     def power_production_next_hour(self) -> int:
         """Return estimated power production next hour."""
         nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
