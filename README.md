@@ -18,7 +18,24 @@
 
 ## About
 
-With this python library you can request data from [forecast.solar](https://forecast.solar) and see what your solar panels may produce in the coming days
+With this python library you can request data from [forecast.solar](https://forecast.solar) and see what your solar panels may produce in the coming days.
+
+## Data
+
+This library returns a lot of different data, based on the API:
+
+- Estimated Energy Production - Today
+- Estimated Energy Production - Tomorrow
+- Estimated Energy Production - This Hour
+- Estimated Energy Production - Next Hour
+- Highest Power Peak Time - Today
+- Highest Power Peak Time - Tomorrow
+- Estimated Power Production - Now
+- Estimated Power Production - Next Hour
+- Estimated Power Production - Next +6 Hours
+- Estimated Power Production - Next +12 Hours
+- Estimated Power Production - Next +24 Hours
+- Timezone
 
 ## Contributing
 
