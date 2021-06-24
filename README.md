@@ -69,15 +69,15 @@ SOFTWARE.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg?style=for-the-badge
-[contributors-shield]: https://img.shields.io/github/contributors/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[contributors-url]: https://github.com/klaasnicolaas/forecast_solar/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[forks-url]: https://github.com/klaasnicolaas/forecast_solar/network/members
-[stars-shield]: https://img.shields.io/github/stars/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[stars-url]: https://github.com/klaasnicolaas/forecast_solar/stargazers
-[issues-shield]: https://img.shields.io/github/issues/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[issues-url]: https://github.com/klaasnicolaas/forecast_solar/issues
-[license-shield]: https://img.shields.io/github/license/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[commits-shield]: https://img.shields.io/github/commit-activity/y/klaasnicolaas/forecast_solar.svg?style=for-the-badge
-[commits]: https://github.com/klaasnicolaas/forecast_solar/commits/master
-[last-commit-shield]: https://img.shields.io/github/last-commit/klaasnicolaas/forecast_solar.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[contributors-url]: https://github.com/home-assistant-libs/forecast_solar/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[forks-url]: https://github.com/home-assistant-libs/forecast_solar/network/members
+[stars-shield]: https://img.shields.io/github/stars/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[stars-url]: https://github.com/home-assistant-libs/forecast_solar/stargazers
+[issues-shield]: https://img.shields.io/github/issues/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[issues-url]: https://github.com/home-assistant-libs/forecast_solar/issues
+[license-shield]: https://img.shields.io/github/license/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[commits-shield]: https://img.shields.io/github/commit-activity/y/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+[commits]: https://github.com/home-assistant-libs/forecast_solar/commits/master
+[last-commit-shield]: https://img.shields.io/github/last-commit/home-assistant-libs/forecast_solar.svg?style=for-the-badge
