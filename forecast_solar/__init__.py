@@ -62,7 +62,7 @@ class ForecastSolar:
         # This ensures we use the IPv4 address.
         dns = DNSResolver()
         try:
-            result = await dns.query("api.forecast.soladdr", "A")
+            result = await dns.query("api.forecast.solar", "A")
         except DNSError as err:
             raise ForecastSolarConnectionError(
                 "Error while resolving Forecast.Solar API address"
