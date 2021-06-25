@@ -7,6 +7,8 @@ import asyncio
 import socket
 from dataclasses import dataclass
 from typing import Any
+from aiodns import DNSResolver
+from aiodns.error import DNSError
 
 import async_timeout
 from aiohttp.client import ClientError, ClientResponseError, ClientSession
@@ -55,7 +57,25 @@ class ForecastSolar:
             ForecastSolarError: Received an unexpected response from the
                 Forecast.Solar API.
         """
-        url = URL.build(scheme="https", host="91.228.53.233")
+
+        # Forecast.Solar is currently experiencing IPv6 issues.
+        # However, their DNS does return an non-working IPv6 address.
+        # This ensures we use the IPv4 address.
+        dns = DNSResolver()
+        try:
+            result = await dns.query('api.forecast.soladdr', 'A')
+        except DNSError as err:
+            raise ForecastSolarConnectionError(
+                "Error while resolving Forecast.Solar API address"
+            ) from err
+
+        if not result:
+            raise ForecastSolarConnectionError(
+                "Could not resolve Forecast.Solar API address"
+            )
+
+        # Connect as normal
+        url = URL.build(scheme="https", host=result[0].host)
 
         # Add API key if one is provided
         if self.api_key is not None:

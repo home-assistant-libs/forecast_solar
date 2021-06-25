@@ -31,7 +31,7 @@ setup(
     ],
     description="Asynchronous Python client for getting forecast solar information",
     include_package_data=True,
-    install_requires=["aiohttp>=3.0.0"],
+    install_requires=["aiohttp>=3.0.0", "aiodns>=3.0.0"],
     keywords=["forecast", "solar", "power", "energy", "api", "async", "client"],
     license="MIT license",
     long_description_content_type="text/markdown",
