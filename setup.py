@@ -6,12 +6,14 @@ import sys
 
 from setuptools import find_packages, setup
 
+
 def read(*parts):
     """Read file."""
     filename = os.path.join(os.path.abspath(os.path.dirname(__file__)), *parts)
     sys.stdout.write(filename)
     with open(filename, encoding="utf-8", mode="rt") as fp:
         return fp.read()
+
 
 with open("README.md") as readme_file:
     readme = readme_file.read()
@@ -39,6 +41,6 @@ setup(
     name="forecast_solar",
     packages=find_packages(include=["forecast_solar"]),
     url="https://github.com/klaasnicolaas/forecast_solar",
-    version=os.environ.get('PACKAGE_VERSION'),
+    version=os.environ.get("PACKAGE_VERSION"),
     zip_safe=False,
 )

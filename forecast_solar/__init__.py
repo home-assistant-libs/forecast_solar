@@ -1,16 +1,15 @@
 """Asynchronous Python client for the Forecast.Solar API."""
 from __future__ import annotations
 
-from collections.abc import Mapping
-
 import asyncio
 import socket
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
-from aiodns import DNSResolver
-from aiodns.error import DNSError
 
 import async_timeout
+from aiodns import DNSResolver
+from aiodns.error import DNSError
 from aiohttp.client import ClientError, ClientResponseError, ClientSession
 from yarl import URL
 
@@ -63,7 +62,7 @@ class ForecastSolar:
         # This ensures we use the IPv4 address.
         dns = DNSResolver()
         try:
-            result = await dns.query('api.forecast.soladdr', 'A')
+            result = await dns.query("api.forecast.soladdr", "A")
         except DNSError as err:
             raise ForecastSolarConnectionError(
                 "Error while resolving Forecast.Solar API address"
