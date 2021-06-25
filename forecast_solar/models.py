@@ -1,9 +1,10 @@
 """Data models for the Forecast.Solar API."""
 from __future__ import annotations
 
-from typing import Any
 from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+from typing import Any
+
 
 @dataclass
 class Estimate:
@@ -51,7 +52,10 @@ class Estimate:
         """Return datetime with highest power production moment today."""
         now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
         value = max(watt for date, watt in self.watts.items() if date.day == now.day)
-        for date, watt, in self.watts.items():
+        for (
+            date,
+            watt,
+        ) in self.watts.items():
             if watt == value:
                 return date
 
@@ -62,7 +66,10 @@ class Estimate:
             hours=24
         )
         value = max(watt for date, watt in self.watts.items() if date.day == nxt.day)
-        for date, watt, in self.watts.items():
+        for (
+            date,
+            watt,
+        ) in self.watts.items():
             if watt == value:
                 return date
 
