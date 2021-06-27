@@ -78,7 +78,7 @@ class ForecastSolar:
 
         # Add API key if one is provided
         if self.api_key is not None:
-            url = url.with_path(self.api_key)
+            url = url.with_path(f"{self.api_key}/")
 
         url = url.join(URL(uri))
 
