@@ -9,8 +9,8 @@ class ForecastSolarConnectionError(ForecastSolarError):
     """Forecast.Solar API connection exception."""
 
 
-class ForecastSolarNoCoverage(ForecastSolarError):
-    """Forecast.Solar out of data coverage exception."""
+class ForecastSolarRequestError(ForecastSolarError):
+    """Forecast.Solar wrong request input variables."""
 
 
 class ForecstSolarRateLimit(ForecastSolarError):

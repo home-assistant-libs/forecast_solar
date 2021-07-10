@@ -16,7 +16,7 @@ from yarl import URL
 from .exceptions import (
     ForecastSolarConnectionError,
     ForecastSolarError,
-    ForecastSolarNoCoverage,
+    ForecastSolarRequestError,
     ForecstSolarRateLimit,
 )
 from .models import Estimate
@@ -60,8 +60,8 @@ class ForecastSolar:
                 with the Forecast.Solar API.
             ForecastSolarError: Received an unexpected response from the
                 Forecast.Solar API.
-            ForecastSolarNoCoverage: For the entered location is no data
-                available from the Forecast.Solar API.
+            ForecastSolarRequestError: There is something wrong with the
+                variables used in the request.
             ForecstSolarRateLimit: The number of requests has exceeded
                 the rate limit of the Forecast.Solar API.
         """
@@ -104,6 +104,19 @@ class ForecastSolar:
                     headers={"Host": "api.forecast.solar"},
                     ssl=False,
                 )
+
+                data = await response.json()
+                if data["message"]["type"] == "error" and data["message"]["code"] == 2:
+                    raise ForecastSolarRequestError(
+                        "wrong value for azimuth or declination has been used"
+                    )
+                elif (
+                    data["message"]["type"] == "error" and data["message"]["code"] == 5
+                ):
+                    raise ForecastSolarRequestError(
+                        "The location isn't in the data coverage zone of the Forecast.Solar API"
+                    )
+
                 response.raise_for_status()
         except asyncio.TimeoutError as exception:
             raise ForecastSolarConnectionError(
@@ -114,10 +127,6 @@ class ForecastSolar:
             ClientResponseError,
             socket.gaierror,
         ) as exception:
-            if exception.status == 400:
-                raise ForecastSolarNoCoverage(
-                    "The location is not in the data coverage zone of the Forecast.Solar API"
-                ) from exception
             if exception.status == 429:
                 raise ForecstSolarRateLimit(
                     "The number of requests has exceeded the rate limit of the Forecast.Solar API"
@@ -142,12 +151,21 @@ class ForecastSolar:
 
         Returns:
             A Estimate object, with a estimated production forecast.
+
+        Raises:
+            ForecastSolarRequestError: There is something wrong with the
+                variables used in the request.
         """
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
             params={"time": "iso8601", "damping": str(self.damping)},
         )
+
+        if not data["result"]["watts"]:
+            raise ForecastSolarRequestError(
+                "The location isn't in the data coverage zone of the Forecast.Solar API"
+            )
 
         return Estimate.from_dict(data)
 
