@@ -7,3 +7,7 @@ class ForecastSolarError(Exception):
 
 class ForecastSolarConnectionError(ForecastSolarError):
     """Forecast.Solar API connection exception."""
+
+
+class ForecastSolarNoCoverage(ForecastSolarConnectionError):
+    """Forecast.Solar out of data coverage exception."""

@@ -13,7 +13,7 @@ from aiodns.error import DNSError
 from aiohttp.client import ClientError, ClientResponseError, ClientSession
 from yarl import URL
 
-from .exceptions import ForecastSolarConnectionError, ForecastSolarError
+from .exceptions import ForecastSolarConnectionError, ForecastSolarError, ForecastSolarNoCoverage
 from .models import Estimate
 
 
@@ -100,14 +100,14 @@ class ForecastSolar:
             raise ForecastSolarConnectionError(
                 "Timeout occurred while connecting to Forecast.Solar API"
             ) from exception
-        except (
-            ClientError,
-            ClientResponseError,
-            socket.gaierror,
-        ) as exception:
-            raise ForecastSolarConnectionError(
-                "Error occurred while communicating with Forecast.Solar API"
-            ) from exception
+        # except (
+        #     ClientError,
+        #     ClientResponseError,
+        #     socket.gaierror,
+        # ) as exception:
+        #     raise ForecastSolarConnectionError(
+        #         "Error occurred while communicating with Forecast.Solar API"
+        #     ) from exception
 
         content_type = response.headers.get("Content-Type", "")
         if "application/json" not in content_type:
@@ -130,6 +130,11 @@ class ForecastSolar:
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
             params={"time": "iso8601", "damping": str(self.damping)},
         )
+
+        if data["message"]["type"] == "error" and data["message"]["code"] == 5:
+            print("You are not in the data coverage zone")
+            raise ForecastSolarNoCoverage("You are not in the data coverage zone")
+
         return Estimate.from_dict(data)
 
     async def close(self) -> None:
