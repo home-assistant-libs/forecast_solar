@@ -1,16 +1,13 @@
 """Asynchronous Python client for the Forecast.Solar API."""
 from __future__ import annotations
 
-import asyncio
-import socket
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
-import async_timeout
 from aiodns import DNSResolver
 from aiodns.error import DNSError
-from aiohttp.client import ClientError, ClientResponseError, ClientSession
+from aiohttp import ClientSession
 from yarl import URL
 
 from .exceptions import (
