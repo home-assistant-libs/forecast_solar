@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from forecast_solar import Estimate, ForecastSolar, ForecastSolarRatelimit
 
@@ -14,7 +14,10 @@ async def main():
         except ForecastSolarRatelimit as err:
             print("Ratelimit reached")
             print(f"Rate limit resets at {err.reset_at}")
-            print(f"That's in {(err.reset_at - datetime.now(timezone.utc))}")
+            reset_period = err.reset_at - datetime.now(timezone.utc)
+            # Strip microseconds as they are not informative
+            reset_period -= timedelta(microseconds=reset_period.microseconds)
+            print(f"That's in {reset_period}")
             return
 
         print(estimate)

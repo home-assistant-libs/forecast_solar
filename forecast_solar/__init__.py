@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from datetime import datetime
-from dataclasses import InitVar, dataclass
+from dataclasses import dataclass
 from typing import Any
 
 from aiodns import DNSResolver
 from aiodns.error import DNSError
-from aiohttp import ClientSession, ClientResponse
+from aiohttp import ClientSession
 from yarl import URL
 
 from .exceptions import (
@@ -17,35 +16,7 @@ from .exceptions import (
     ForecastSolarRequestError,
     ForecastSolarRatelimit,
 )
-from .models import Estimate
-
-
-@dataclass
-class Ratelimit:
-    """Information about the current rate limit."""
-
-    call_limit: int
-    remaining_calls: int
-    period: int
-    retry_at: datetime | None
-
-    @classmethod
-    def from_response(cls, response: ClientResponse) -> Ratelimit:
-        """Initialize rate limit object from response."""
-        # The documented headers do not match the returned headers
-        # https://doc.forecast.solar/doku.php?id=api#headers
-        limit = int(response.headers["X-Ratelimit-Limit"])
-        period = int(response.headers["X-Ratelimit-Period"])
-
-        # Remaining is not there if we exceeded limit
-        remaining = int(response.headers.get("X-Ratelimit-Remaining", 0))
-
-        if "X-Ratelimit-Retry-At" in response.headers:
-            retry_at = datetime.fromisoformat(response.headers["X-Ratelimit-Retry-At"])
-        else:
-            retry_at = None
-
-        return cls(limit, period, remaining, retry_at)
+from .models import Estimate, Ratelimit
 
 
 @dataclass
