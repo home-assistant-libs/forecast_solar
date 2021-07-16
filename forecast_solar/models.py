@@ -51,7 +51,10 @@ class Estimate:
     def power_highest_peak_time_today(self) -> datetime:
         """Return datetime with highest power production moment today."""
         now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
-        value = max(watt for date, watt in self.watts.items() if date.day == now.day)
+        value = max(
+            (watt for date, watt in self.watts.items() if date.day == now.day),
+            default=None,
+        )
         for (
             date,
             watt,
@@ -65,7 +68,10 @@ class Estimate:
         nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
             hours=24
         )
-        value = max(watt for date, watt in self.watts.items() if date.day == nxt.day)
+        value = max(
+            (watt for date, watt in self.watts.items() if date.day == nxt.day),
+            default=None,
+        )
         for (
             date,
             watt,
