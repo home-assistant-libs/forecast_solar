@@ -4,6 +4,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any
+import sys
+
+if sys.version_info[:2] >= (3, 9):
+    import zoneinfo
+else:
+    from backports import zoneinfo
 
 
 @dataclass
@@ -50,7 +56,9 @@ class Estimate:
     @property
     def power_highest_peak_time_today(self) -> datetime:
         """Return datetime with highest power production moment today."""
-        now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
+        now = datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone)).replace(
+            minute=59, second=59
+        ) + timedelta(hours=24)
         value = max(
             (watt for date, watt in self.watts.items() if date.day == now.day),
             default=None,
@@ -65,9 +73,9 @@ class Estimate:
     @property
     def power_highest_peak_time_tomorrow(self) -> datetime:
         """Return datetime with highest power production moment tomorrow."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=24
-        )
+        nxt = datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone)).replace(
+            minute=59, second=59
+        ) + timedelta(hours=24)
         value = max(
             (watt for date, watt in self.watts.items() if date.day == nxt.day),
             default=None,
@@ -151,8 +159,8 @@ class Estimate:
                 return kwh
         return 0
 
-    @staticmethod
-    def from_dict(data: dict[str, Any]) -> Estimate:
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Estimate:
         """Return a Estimate object from a Forecast.Solar API response.
 
         Converts a dictionary, obtained from the Forecast.Solar API into
@@ -162,25 +170,24 @@ class Estimate:
             data: The estimate response from the Forecast.Solar API.
 
         Returns:
-            An estimate object.
+            An Estimate object.
         """
         previous_value = 0
         kwh_hours = {}
 
         for date, energy in data["result"]["watt_hours"].items():
-            date = datetime.fromisoformat(date).astimezone(timezone.utc)
+            date = datetime.fromisoformat(date)
             kwh_hours[date] = (energy - previous_value) / 1000
             previous_value = energy
 
-        return Estimate(
+        return cls(
             kwh_days={
-                datetime.fromisoformat(d).astimezone(timezone.utc): (e / 1000)
+                datetime.fromisoformat(d): (e / 1000)
                 for d, e in data["result"]["watt_hours_day"].items()
             },
             kwh_hours=kwh_hours,
             watts={
-                datetime.fromisoformat(d).astimezone(timezone.utc): w
-                for d, w in data["result"]["watts"].items()
+                datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
             },
             api_timezone=data["message"]["info"]["timezone"],
         )
