@@ -58,7 +58,7 @@ class Estimate:
         """Return datetime with highest power production moment today."""
         now = datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone)).replace(
             minute=59, second=59
-        ) + timedelta(hours=24)
+        )
         value = max(
             (watt for date, watt in self.watts.items() if date.day == now.day),
             default=None,
