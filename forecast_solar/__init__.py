@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from datetime import datetime
+from dataclasses import InitVar, dataclass
 from typing import Any
 
 from aiodns import DNSResolver
 from aiodns.error import DNSError
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientResponse
 from yarl import URL
 
 from .exceptions import (
@@ -17,6 +18,37 @@ from .exceptions import (
     ForecastSolarRatelimit,
 )
 from .models import Estimate
+
+
+@dataclass
+class Ratelimit:
+    """Information about the current rate limit."""
+
+    call_limit: int
+    remaining_calls: int
+    period: int
+    retry_at: datetime | None
+
+    @classmethod
+    def from_response(cls, response: ClientResponse) -> Ratelimit:
+        """Initialize rate limit object from response."""
+        from pprint import pprint
+
+        pprint(dict(response.headers))
+        # The documented headers do not match the returned headers
+        # https://doc.forecast.solar/doku.php?id=api#headers
+        limit = int(response.headers["X-Ratelimit-Limit"])
+        period = int(response.headers["X-Ratelimit-Period"])
+
+        # Remaining is not there if we exceeded limit
+        remaining = int(response.headers.get("X-Ratelimit-Remaining", 0))
+
+        if "X-Ratelimit-Retry-At" in response.headers:
+            retry_at = datetime.fromisoformat(response.headers["X-Ratelimit-Retry-At"])
+        else:
+            retry_at = None
+
+        return cls(limit, period, remaining, retry_at)
 
 
 @dataclass
@@ -33,6 +65,7 @@ class ForecastSolar:
     close_session: bool = False
     damping: float = 0
     session: ClientSession | None = None
+    ratelimit: Ratelimit | None = None
 
     async def _request(
         self,
@@ -100,13 +133,16 @@ class ForecastSolar:
             ssl=False,
         )
 
+        if response.status < 500:
+            self.ratelimit = Ratelimit.from_response(response)
+
         if response.status == 400:
             data = await response.json()
             raise ForecastSolarRequestError(data["message"])
 
         if response.status == 429:
             data = await response.json()
-            raise ForecastSolarRatelimit(data['message'])
+            raise ForecastSolarRatelimit(data["message"])
 
         response.raise_for_status()
 

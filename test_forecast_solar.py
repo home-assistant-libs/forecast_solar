@@ -13,10 +13,8 @@ async def main():
             estimate: Estimate = await forecast.estimate()
         except ForecastSolarRatelimit as err:
             print("Ratelimit reached")
-            reset_in_seconds = (
-                datetime.now(tzinfo=timezone.utc) - err.reset_at
-            ).total_seconds()
-            print(f"Rate limit resets at {err.reset_at} ({reset_in_seconds})")
+            print(f"Rate limit resets at {err.reset_at}")
+            print(f"That's in {(err.reset_at - datetime.now(timezone.utc))}")
             return
 
         print(estimate)
@@ -41,8 +39,8 @@ async def main():
         print(f"energy_current_hour: {estimate.energy_current_hour}")
         print(f"energy_next_hour: {estimate.energy_next_hour}")
         print(f"timezone: {estimate.timezone}")
+        print(forecast.ratelimit)
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.run(main())
