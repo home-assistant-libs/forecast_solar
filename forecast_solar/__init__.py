@@ -32,9 +32,6 @@ class Ratelimit:
     @classmethod
     def from_response(cls, response: ClientResponse) -> Ratelimit:
         """Initialize rate limit object from response."""
-        from pprint import pprint
-
-        pprint(dict(response.headers))
         # The documented headers do not match the returned headers
         # https://doc.forecast.solar/doku.php?id=api#headers
         limit = int(response.headers["X-Ratelimit-Limit"])
