@@ -2,19 +2,49 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import datetime, timezone, timedelta
 import socket
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass
 from typing import Any
 
 import async_timeout
 from aiodns import DNSResolver
 from aiodns.error import DNSError
-from aiohttp.client import ClientError, ClientResponseError, ClientSession
+from aiohttp import ClientError, ClientResponseError, ClientSession, ClientResponse
 from yarl import URL
 
 from .exceptions import ForecastSolarConnectionError, ForecastSolarError
 from .models import Estimate
+
+
+@dataclass
+class Ratelimit:
+    """Information about the current rate limit."""
+
+    call_limit: int
+    remaining_calls: int
+    period: int
+
+    @classmethod
+    def from_response(cls, response: ClientResponse) -> Ratelimit:
+        """Initialize rate limit object from response."""
+        # The documented headers do not match the returned headers
+        # https://doc.forecast.solar/doku.php?id=api#headers
+        info = {
+            key: int(response.headers[key])
+            for key in (
+                "X-Ratelimit-Limit",
+                "X-Ratelimit-Remaining",
+                "X-Ratelimit-Period",
+            )
+        }
+
+        return cls(
+            info["X-Ratelimit-Limit"],
+            info["X-Ratelimit-Remaining"],
+            info["X-Ratelimit-Period"],
+        )
 
 
 @dataclass
@@ -31,6 +61,7 @@ class ForecastSolar:
     close_session: bool = False
     damping: float = 0
     session: ClientSession | None = None
+    ratelimit: Ratelimit | None = None
 
     async def _request(
         self,
@@ -95,6 +126,8 @@ class ForecastSolar:
                     headers={"Host": "api.forecast.solar"},
                     ssl=False,
                 )
+                if response.status < 500:
+                    self.ratelimit = Ratelimit.from_response(response)
                 response.raise_for_status()
         except asyncio.TimeoutError as exception:
             raise ForecastSolarConnectionError(

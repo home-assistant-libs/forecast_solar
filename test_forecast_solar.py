@@ -31,8 +31,8 @@ async def main():
         print(f"energy_current_hour: {estimate.energy_current_hour}")
         print(f"energy_next_hour: {estimate.energy_next_hour}")
         print(f"timezone: {estimate.timezone}")
+        print(forecast.ratelimit)
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.run(main())
