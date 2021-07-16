@@ -17,7 +17,7 @@ from .exceptions import (
     ForecastSolarConnectionError,
     ForecastSolarError,
     ForecastSolarRequestError,
-    ForecstSolarRateLimit,
+    ForecastSolarRatelimit,
 )
 from .models import Estimate
 
@@ -62,7 +62,7 @@ class ForecastSolar:
                 Forecast.Solar API.
             ForecastSolarRequestError: There is something wrong with the
                 variables used in the request.
-            ForecstSolarRateLimit: The number of requests has exceeded
+            ForecastSolarRatelimit: The number of requests has exceeded
                 the rate limit of the Forecast.Solar API.
         """
 
@@ -95,46 +95,22 @@ class ForecastSolar:
             self.session = ClientSession()
             self.close_session = True
 
-        try:
-            with async_timeout.timeout(30):
-                response = await self.session.request(
-                    "GET",
-                    url,
-                    params=params,
-                    headers={"Host": "api.forecast.solar"},
-                    ssl=False,
-                )
+        response = await self.session.request(
+            "GET",
+            url,
+            params=params,
+            headers={"Host": "api.forecast.solar"},
+            ssl=False,
+        )
 
-                data = await response.json()
-                if data["message"]["type"] == "error" and data["message"]["code"] == 2:
-                    raise ForecastSolarRequestError(
-                        "wrong value for azimuth or declination has been used"
-                    )
-                elif (
-                    data["message"]["type"] == "error" and data["message"]["code"] == 5
-                ):
-                    raise ForecastSolarRequestError(
-                        "The location isn't in the data coverage zone of the Forecast.Solar API"
-                    )
+        if response.status == 400:
+            data = await response.json()
+            raise ForecastSolarRequestError(data["message"])
 
-                response.raise_for_status()
-        except asyncio.TimeoutError as exception:
-            raise ForecastSolarConnectionError(
-                "Timeout occurred while connecting to Forecast.Solar API"
-            ) from exception
-        except (
-            ClientError,
-            ClientResponseError,
-            socket.gaierror,
-        ) as exception:
-            if exception.status == 429:
-                raise ForecstSolarRateLimit(
-                    "The number of requests has exceeded the rate limit of the Forecast.Solar API"
-                ) from exception
-            else:
-                raise ForecastSolarConnectionError(
-                    "Error occurred while communicating with Forecast.Solar API"
-                ) from exception
+        if response.status == 429:
+            raise ForecastSolarRatelimit()
+
+        response.raise_for_status()
 
         content_type = response.headers.get("Content-Type", "")
         if "application/json" not in content_type:
