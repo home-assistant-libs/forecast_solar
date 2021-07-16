@@ -1,4 +1,5 @@
 """Exceptions for Forecast.Solar."""
+from datetime import datetime
 
 
 class ForecastSolarError(Exception):
@@ -21,5 +22,11 @@ class ForecastSolarRequestError(ForecastSolarError):
         self.code = data["code"]
 
 
-class ForecastSolarRatelimit(ForecastSolarError):
+class ForecastSolarRatelimit(ForecastSolarRequestError):
     """Forecast.Solar maximum number of requests reached exception."""
+
+    def __init__(self, data: dict) -> None:
+        """Init a rate limit error."""
+        super().__init__(data)
+
+        self.reset_at = datetime.fromisoformat(data["ratelimit"]["retry-at"])

@@ -105,7 +105,8 @@ class ForecastSolar:
             raise ForecastSolarRequestError(data["message"])
 
         if response.status == 429:
-            raise ForecastSolarRatelimit()
+            data = await response.json()
+            raise ForecastSolarRatelimit(data['message'])
 
         response.raise_for_status()
 
