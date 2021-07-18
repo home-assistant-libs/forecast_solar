@@ -24,18 +24,24 @@ With this python library you can request data from [forecast.solar](https://fore
 
 This library returns a lot of different data, based on the API:
 
-- Estimated Energy Production - Today
-- Estimated Energy Production - Tomorrow
+### Energy
+- Total Estimated Energy Production (per day)
 - Estimated Energy Production - This Hour
 - Estimated Energy Production - Next Hour
+
+### Power
 - Highest Power Peak Time - Today
 - Highest Power Peak Time - Tomorrow
 - Estimated Power Production - Now
 - Estimated Power Production - Next Hour
-- Estimated Power Production - Next +6 Hours
-- Estimated Power Production - Next +12 Hours
-- Estimated Power Production - Next +24 Hours
+- Estimated Power Production - In +6 Hours
+- Estimated Power Production - In +12 Hours
+- Estimated Power Production - In +24 Hours
+
+### API Info
 - Timezone
+- Rate limit
+- Rate remaining
 
 ## Contributing
 
