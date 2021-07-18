@@ -11,6 +11,8 @@ if sys.version_info[:2] >= (3, 9):
 else:
     from backports import zoneinfo
 
+from aiohttp import ClientResponse
+
 
 @dataclass
 class Estimate:
@@ -191,3 +193,31 @@ class Estimate:
             },
             api_timezone=data["message"]["info"]["timezone"],
         )
+
+
+@dataclass
+class Ratelimit:
+    """Information about the current rate limit."""
+
+    call_limit: int
+    remaining_calls: int
+    period: int
+    retry_at: datetime | None
+
+    @classmethod
+    def from_response(cls, response: ClientResponse) -> Ratelimit:
+        """Initialize rate limit object from response."""
+        # The documented headers do not match the returned headers
+        # https://doc.forecast.solar/doku.php?id=api#headers
+        limit = int(response.headers["X-Ratelimit-Limit"])
+        period = int(response.headers["X-Ratelimit-Period"])
+
+        # Remaining is not there if we exceeded limit
+        remaining = int(response.headers.get("X-Ratelimit-Remaining", 0))
+
+        if "X-Ratelimit-Retry-At" in response.headers:
+            retry_at = datetime.fromisoformat(response.headers["X-Ratelimit-Retry-At"])
+        else:
+            retry_at = None
+
+        return cls(limit, remaining, period, retry_at)

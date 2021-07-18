@@ -1,20 +1,22 @@
 """Asynchronous Python client for the Forecast.Solar API."""
 from __future__ import annotations
 
-import asyncio
-import socket
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
-import async_timeout
 from aiodns import DNSResolver
 from aiodns.error import DNSError
-from aiohttp.client import ClientError, ClientResponseError, ClientSession
+from aiohttp import ClientSession
 from yarl import URL
 
-from .exceptions import ForecastSolarConnectionError, ForecastSolarError
-from .models import Estimate
+from .exceptions import (
+    ForecastSolarConnectionError,
+    ForecastSolarError,
+    ForecastSolarRequestError,
+    ForecastSolarRatelimit,
+)
+from .models import Estimate, Ratelimit
 
 
 @dataclass
@@ -31,6 +33,7 @@ class ForecastSolar:
     close_session: bool = False
     damping: float = 0
     session: ClientSession | None = None
+    ratelimit: Ratelimit | None = None
 
     async def _request(
         self,
@@ -55,6 +58,10 @@ class ForecastSolar:
                 with the Forecast.Solar API.
             ForecastSolarError: Received an unexpected response from the
                 Forecast.Solar API.
+            ForecastSolarRequestError: There is something wrong with the
+                variables used in the request.
+            ForecastSolarRatelimit: The number of requests has exceeded
+                the rate limit of the Forecast.Solar API.
         """
 
         # Forecast.Solar is currently experiencing IPv6 issues.
@@ -86,28 +93,26 @@ class ForecastSolar:
             self.session = ClientSession()
             self.close_session = True
 
-        try:
-            with async_timeout.timeout(30):
-                response = await self.session.request(
-                    "GET",
-                    url,
-                    params=params,
-                    headers={"Host": "api.forecast.solar"},
-                    ssl=False,
-                )
-                response.raise_for_status()
-        except asyncio.TimeoutError as exception:
-            raise ForecastSolarConnectionError(
-                "Timeout occurred while connecting to Forecast.Solar API"
-            ) from exception
-        except (
-            ClientError,
-            ClientResponseError,
-            socket.gaierror,
-        ) as exception:
-            raise ForecastSolarConnectionError(
-                "Error occurred while communicating with Forecast.Solar API"
-            ) from exception
+        response = await self.session.request(
+            "GET",
+            url,
+            params=params,
+            headers={"Host": "api.forecast.solar"},
+            ssl=False,
+        )
+
+        if response.status < 500:
+            self.ratelimit = Ratelimit.from_response(response)
+
+        if response.status == 400:
+            data = await response.json()
+            raise ForecastSolarRequestError(data["message"])
+
+        if response.status == 429:
+            data = await response.json()
+            raise ForecastSolarRatelimit(data["message"])
+
+        response.raise_for_status()
 
         content_type = response.headers.get("Content-Type", "")
         if "application/json" not in content_type:
@@ -130,6 +135,7 @@ class ForecastSolar:
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
             params={"time": "iso8601", "damping": str(self.damping)},
         )
+
         return Estimate.from_dict(data)
 
     async def close(self) -> None:
