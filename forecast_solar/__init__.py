@@ -129,21 +129,12 @@ class ForecastSolar:
 
         Returns:
             A Estimate object, with a estimated production forecast.
-
-        Raises:
-            ForecastSolarRequestError: There is something wrong with the
-                variables used in the request.
         """
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
             params={"time": "iso8601", "damping": str(self.damping)},
         )
-
-        if not data["result"]["watts"]:
-            raise ForecastSolarRequestError(
-                "The location isn't in the data coverage zone of the Forecast.Solar API"
-            )
 
         return Estimate.from_dict(data)
 
