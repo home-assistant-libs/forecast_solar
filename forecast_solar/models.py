@@ -62,7 +62,11 @@ class Estimate:
     @property
     def power_production_now(self) -> int:
         """Return estimated power production right now."""
-        return _timed_value(self.now(), self.watts) or 0
+        return self.power_production_at_time(self.now())
+
+    def power_production_at_time(self, time: datetime) -> int:
+        """Return estimated power production at a specific time."""
+        return _timed_value(time, self.watts) or 0
 
     @property
     def power_highest_peak_time_today(self) -> datetime:
