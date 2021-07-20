@@ -151,7 +151,7 @@ class Estimate:
 
         return cls(
             kwh_days={
-                datetime.fromisoformat(d): (e)
+                datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_day"].items()
             },
             kwh_hours=kwh_hours,
