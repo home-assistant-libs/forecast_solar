@@ -1,7 +1,9 @@
 import asyncio
+import dataclasses
 from datetime import datetime, timezone, timedelta
+from pprint import pprint
 
-from forecast_solar import Estimate, ForecastSolar, ForecastSolarRatelimit
+from forecast_solar import ForecastSolar, ForecastSolarRatelimit
 
 
 async def main():
@@ -10,7 +12,7 @@ async def main():
         latitude=52.16, longitude=4.47, declination=20, azimuth=10, kwp=2.160, damping=0
     ) as forecast:
         try:
-            estimate: Estimate = await forecast.estimate()
+            estimate = await forecast.estimate()
         except ForecastSolarRatelimit as err:
             print("Ratelimit reached")
             print(f"Rate limit resets at {err.reset_at}")
@@ -20,7 +22,7 @@ async def main():
             print(f"That's in {reset_period}")
             return
 
-        print(estimate)
+        pprint(dataclasses.asdict(estimate))
         print()
         print(f"energy_production_today: {estimate.energy_production_today}")
         print(f"energy_production_tomorrow: {estimate.energy_production_tomorrow}")
@@ -31,16 +33,11 @@ async def main():
         print(
             f"power_highest_peak_time_tomorrow: {estimate.power_highest_peak_time_tomorrow}"
         )
-        print(f"power_production_next_hour: {estimate.power_production_next_hour}")
-        print(f"power_production_next_6hours: {estimate.power_production_next_6hours}")
-        print(
-            f"power_production_next_12hours: {estimate.power_production_next_12hours}"
-        )
-        print(
-            f"power_production_next_24hours: {estimate.power_production_next_24hours}"
-        )
+        print(f"power_production_next_hour: {estimate.sum_energy_production(1)}")
+        print(f"power_production_next_6hours: {estimate.sum_energy_production(6)}")
+        print(f"power_production_next_12hours: {estimate.sum_energy_production(12)}")
+        print(f"power_production_next_24hours: {estimate.sum_energy_production(24)}")
         print(f"energy_current_hour: {estimate.energy_current_hour}")
-        print(f"energy_next_hour: {estimate.energy_next_hour}")
         print(f"timezone: {estimate.timezone}")
         print(forecast.ratelimit)
 

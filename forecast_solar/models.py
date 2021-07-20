@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, date
 from typing import Any
 import sys
 
@@ -12,6 +12,17 @@ else:
     from backports import zoneinfo
 
 from aiohttp import ClientResponse
+
+
+def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
+    """Return the value for a specific time."""
+    value = None
+    for timestamp, cur_value in data.items():
+        if timestamp > at:
+            return value
+        value = cur_value
+
+    return None
 
 
 @dataclass
@@ -24,10 +35,14 @@ class Estimate:
         watts: Estimated solar power output per hour.
     """
 
-    kwh_days: dict[datetime, float]
-    kwh_hours: dict[datetime, float]
+    kwh_days: dict[datetime, int]
+    kwh_hours: dict[datetime, int]
     watts: dict[datetime, int]
     api_timezone: str
+
+    def now(self) -> datetime:
+        """Return the current timestamp in the API timezone."""
+        return datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone))
 
     @property
     def timezone(self) -> str:
@@ -35,131 +50,74 @@ class Estimate:
         return self.api_timezone
 
     @property
-    def energy_production_today(self) -> float:
+    def energy_production_today(self) -> int:
         """Return estimated energy produced today."""
-        return list(self.kwh_days.values())[0]
+        return self.day_production(self.now().date())
 
     @property
-    def energy_production_tomorrow(self) -> float:
+    def energy_production_tomorrow(self) -> int:
         """Return estimated energy produced today."""
-        return list(self.kwh_days.values())[1]
+        return self.day_production(self.now().date() + timedelta(days=1))
 
     @property
     def power_production_now(self) -> int:
         """Return estimated power production right now."""
-        value = 0
-        now = datetime.now(tz=timezone.utc)
-        for date, watt in self.watts.items():
-            if date > now:
-                return value
-            value = watt
-        return 0
+        return _timed_value(self.now(), self.watts) or 0
 
     @property
     def power_highest_peak_time_today(self) -> datetime:
         """Return datetime with highest power production moment today."""
-        now = datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone)).replace(
-            minute=59, second=59
-        )
-        value = max(
-            (watt for date, watt in self.watts.items() if date.day == now.day),
-            default=None,
-        )
-        for (
-            date,
-            watt,
-        ) in self.watts.items():
-            if watt == value:
-                return date
+        return self.peak_production_time(self.now().date())
 
     @property
     def power_highest_peak_time_tomorrow(self) -> datetime:
         """Return datetime with highest power production moment tomorrow."""
-        nxt = datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone)).replace(
-            minute=59, second=59
-        ) + timedelta(hours=24)
+        return self.peak_production_time(self.now().date() + timedelta(days=1))
+
+    @property
+    def energy_current_hour(self) -> int:
+        """Return the estimated energy production for the current hour."""
+        return _timed_value(self.now(), self.kwh_hours) or 0
+
+    def sum_energy_production(self, period_hours: int) -> int:
+        """Return the sum of the energy production."""
+        now = self.now().replace(minute=59, second=59)
+        until = now + timedelta(hours=period_hours)
+
+        total = 0
+
+        for timestamp, kwh in self.kwh_hours.items():
+            # Skip all dates until this hour
+            if timestamp < now:
+                continue
+
+            if timestamp > until:
+                break
+
+            total += kwh
+
+        return total
+
+    def day_production(self, specific_date: date) -> int:
+        """Return the day production."""
+        for timestamp, production in self.kwh_days.items():
+            if timestamp.date() == specific_date:
+                return production
+
+        return 0
+
+    def peak_production_time(self, specific_date: date) -> datetime:
+        """Return the peak time on a specific date."""
         value = max(
-            (watt for date, watt in self.watts.items() if date.day == nxt.day),
+            (watt for date, watt in self.watts.items() if date.date() == specific_date),
             default=None,
         )
         for (
-            date,
+            timestamp,
             watt,
         ) in self.watts.items():
             if watt == value:
-                return date
-
-    @property
-    def power_production_next_hour(self) -> int:
-        """Return estimated power production next hour."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=1
-        )
-        value = 0
-        for date, watt in self.watts.items():
-            if date > nxt:
-                return value
-            value = watt
-        return 0
-
-    @property
-    def power_production_next_6hours(self) -> int:
-        """Return estimated power production +6 hours."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=6
-        )
-        value = 0
-        for date, watt in self.watts.items():
-            if date > nxt:
-                return value
-            value = watt
-        return 0
-
-    @property
-    def power_production_next_12hours(self) -> int:
-        """Return estimated power production +12 hours."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=12
-        )
-        value = 0
-        for date, watt in self.watts.items():
-            if date > nxt:
-                return value
-            value = watt
-        return 0
-
-    @property
-    def power_production_next_24hours(self) -> int:
-        """Return estimated power production +24 hours."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=24
-        )
-        value = 0
-        for date, watt in self.watts.items():
-            if date > nxt:
-                return value
-            value = watt
-        return 0
-
-    @property
-    def energy_current_hour(self) -> float:
-        """Return the estimated energy production for the current hour."""
-        now = datetime.now(tz=timezone.utc).replace(minute=59, second=59)
-        for date, kwh in self.kwh_hours.items():
-            if date > now and now.day == date.day:
-                return kwh
-        return 0
-
-    @property
-    def energy_next_hour(self) -> float:
-        """Return the estimated energy production for the next hour."""
-        nxt = datetime.now(tz=timezone.utc).replace(minute=59, second=59) + timedelta(
-            hours=1
-        )
-        for date, kwh in self.kwh_hours.items():
-            if date > nxt and date.day == nxt.day:
-                return kwh
-        return 0
+                return timestamp
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Estimate:
@@ -177,14 +135,19 @@ class Estimate:
         previous_value = 0
         kwh_hours = {}
 
-        for date, energy in data["result"]["watt_hours"].items():
-            date = datetime.fromisoformat(date)
-            kwh_hours[date] = (energy - previous_value) / 1000
+        for timestamp, energy in data["result"]["watt_hours"].items():
+            timestamp = datetime.fromisoformat(timestamp)
+
+            # If we get a reset
+            if energy < previous_value:
+                previous_value = 0
+
+            kwh_hours[timestamp] = energy - previous_value
             previous_value = energy
 
         return cls(
             kwh_days={
-                datetime.fromisoformat(d): (e / 1000)
+                datetime.fromisoformat(d): (e)
                 for d, e in data["result"]["watt_hours_day"].items()
             },
             kwh_hours=kwh_hours,
