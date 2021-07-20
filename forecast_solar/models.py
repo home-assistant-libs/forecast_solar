@@ -40,10 +40,6 @@ class Estimate:
     watts: dict[datetime, int]
     api_timezone: str
 
-    def now(self) -> datetime:
-        """Return the current timestamp in the API timezone."""
-        return datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone))
-
     @property
     def timezone(self) -> str:
         """Return API timezone information."""
@@ -64,10 +60,6 @@ class Estimate:
         """Return estimated power production right now."""
         return self.power_production_at_time(self.now())
 
-    def power_production_at_time(self, time: datetime) -> int:
-        """Return estimated power production at a specific time."""
-        return _timed_value(time, self.watts) or 0
-
     @property
     def power_highest_peak_time_today(self) -> datetime:
         """Return datetime with highest power production moment today."""
@@ -82,6 +74,35 @@ class Estimate:
     def energy_current_hour(self) -> int:
         """Return the estimated energy production for the current hour."""
         return _timed_value(self.now(), self.kwh_hours) or 0
+
+    def day_production(self, specific_date: date) -> int:
+        """Return the day production."""
+        for timestamp, production in self.kwh_days.items():
+            if timestamp.date() == specific_date:
+                return production
+
+        return 0
+
+    def now(self) -> datetime:
+        """Return the current timestamp in the API timezone."""
+        return datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone))
+
+    def peak_production_time(self, specific_date: date) -> datetime:
+        """Return the peak time on a specific date."""
+        value = max(
+            (watt for date, watt in self.watts.items() if date.date() == specific_date),
+            default=None,
+        )
+        for (
+            timestamp,
+            watt,
+        ) in self.watts.items():
+            if watt == value:
+                return timestamp
+
+    def power_production_at_time(self, time: datetime) -> int:
+        """Return estimated power production at a specific time."""
+        return _timed_value(time, self.watts) or 0
 
     def sum_energy_production(self, period_hours: int) -> int:
         """Return the sum of the energy production."""
@@ -101,27 +122,6 @@ class Estimate:
             total += kwh
 
         return total
-
-    def day_production(self, specific_date: date) -> int:
-        """Return the day production."""
-        for timestamp, production in self.kwh_days.items():
-            if timestamp.date() == specific_date:
-                return production
-
-        return 0
-
-    def peak_production_time(self, specific_date: date) -> datetime:
-        """Return the peak time on a specific date."""
-        value = max(
-            (watt for date, watt in self.watts.items() if date.date() == specific_date),
-            default=None,
-        )
-        for (
-            timestamp,
-            watt,
-        ) in self.watts.items():
-            if watt == value:
-                return timestamp
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Estimate:
