@@ -30,13 +30,13 @@ class Estimate:
     """Object holding estimate forecast results from Forecast.Solar.
 
     Attributes:
-        kwh_days: Estimated solar energy production per day.
-        kwh_hours: Estimated solar energy production per hour.
+        wh_days: Estimated solar energy production per day.
+        wh_hours: Estimated solar energy production per hour.
         watts: Estimated solar power output per hour.
     """
 
-    kwh_days: dict[datetime, int]
-    kwh_hours: dict[datetime, int]
+    wh_days: dict[datetime, int]
+    wh_hours: dict[datetime, int]
     watts: dict[datetime, int]
     api_timezone: str
 
@@ -73,11 +73,11 @@ class Estimate:
     @property
     def energy_current_hour(self) -> int:
         """Return the estimated energy production for the current hour."""
-        return _timed_value(self.now(), self.kwh_hours) or 0
+        return _timed_value(self.now(), self.wh_hours) or 0
 
     def day_production(self, specific_date: date) -> int:
         """Return the day production."""
-        for timestamp, production in self.kwh_days.items():
+        for timestamp, production in self.wh_days.items():
             if timestamp.date() == specific_date:
                 return production
 
@@ -111,7 +111,7 @@ class Estimate:
 
         total = 0
 
-        for timestamp, kwh in self.kwh_hours.items():
+        for timestamp, wh in self.wh_hours.items():
             # Skip all dates until this hour
             if timestamp < now:
                 continue
@@ -119,7 +119,7 @@ class Estimate:
             if timestamp > until:
                 break
 
-            total += kwh
+            total += wh
 
         return total
 
@@ -137,7 +137,7 @@ class Estimate:
             An Estimate object.
         """
         previous_value = 0
-        kwh_hours = {}
+        wh_hours = {}
 
         for timestamp, energy in data["result"]["watt_hours"].items():
             timestamp = datetime.fromisoformat(timestamp)
@@ -146,15 +146,15 @@ class Estimate:
             if energy < previous_value:
                 previous_value = 0
 
-            kwh_hours[timestamp] = energy - previous_value
+            wh_hours[timestamp] = energy - previous_value
             previous_value = energy
 
         return cls(
-            kwh_days={
+            wh_days={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_day"].items()
             },
-            kwh_hours=kwh_hours,
+            wh_hours=wh_hours,
             watts={
                 datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
             },
