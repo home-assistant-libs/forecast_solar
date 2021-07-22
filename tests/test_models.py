@@ -60,7 +60,6 @@ def test_estimate_near_end(patch_near_end_today):
     estimate = models.Estimate.from_dict(PAYLOAD)
 
     assert estimate.timezone == "Europe/Amsterdam"
-    print("NOW", estimate.now())
     assert estimate.now().date().isoformat() == "2021-07-21"
 
     assert estimate.energy_production_today == 14679
