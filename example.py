@@ -33,7 +33,7 @@ async def main():
             f"power_highest_peak_time_tomorrow: {estimate.power_highest_peak_time_tomorrow}"
         )
         print()
-        print(f"power_production now: {estimate.power_production_now}")
+        print(f"power_production_now: {estimate.power_production_now}")
         print(
             f"power_production in 1 hour: {estimate.power_production_at_time(estimate.now() + timedelta(hours=1))}"
         )
