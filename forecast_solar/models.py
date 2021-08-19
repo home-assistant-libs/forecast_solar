@@ -24,6 +24,13 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
 
     return None
 
+class AccountType(str):
+    """Enumeration representing the Forecast.Solar account type."""
+
+    PUBLIC = "public"
+    PERSONAL = "personal"
+    PROFESSIONAL = "professional"
+
 
 @dataclass
 class Estimate:
@@ -38,12 +45,22 @@ class Estimate:
     wh_days: dict[datetime, int]
     wh_hours: dict[datetime, int]
     watts: dict[datetime, int]
+    api_rate_limit: int
     api_timezone: str
 
     @property
     def timezone(self) -> str:
         """Return API timezone information."""
         return self.api_timezone
+
+    @property
+    def account_type(self) -> int:
+        """Return API account_type information."""
+        if self.api_rate_limit == 60:
+            return AccountType.PERSONAL
+        elif self.api_rate_limit == 5:
+            return AccountType.PROFESSIONAL
+        return AccountType.PUBLIC
 
     @property
     def energy_production_today(self) -> int:
@@ -158,6 +175,7 @@ class Estimate:
             watts={
                 datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
             },
+            api_rate_limit=data["message"]["ratelimit"]["limit"],
             api_timezone=data["message"]["info"]["timezone"],
         )
 

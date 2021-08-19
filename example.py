@@ -33,7 +33,7 @@ async def main():
             f"power_highest_peak_time_tomorrow: {estimate.power_highest_peak_time_tomorrow}"
         )
         print()
-        print(f"power_production_now: {estimate.power_production_now}")
+        print(f"power_production now: {estimate.power_production_now}")
         print(
             f"power_production in 1 hour: {estimate.power_production_at_time(estimate.now() + timedelta(hours=1))}"
         )
@@ -47,12 +47,13 @@ async def main():
             f"power_production in 24 hours: {estimate.power_production_at_time(estimate.now() + timedelta(hours=24))}"
         )
         print()
-        print(f"energy_current_hour: {estimate.energy_current_hour}")
-        print(f"energy_production_next_hour: {estimate.sum_energy_production(1)}")
-        print(f"energy_production_next_6hours: {estimate.sum_energy_production(6)}")
-        print(f"energy_production_next_12hours: {estimate.sum_energy_production(12)}")
-        print(f"energy_production_next_24hours: {estimate.sum_energy_production(24)}")
+        print(f"energy_current hour: {estimate.energy_current_hour}")
+        print(f"energy_production next hour: {estimate.sum_energy_production(1)}")
+        print(f"energy_production next 6 hours: {estimate.sum_energy_production(6)}")
+        print(f"energy_production next 12 hours: {estimate.sum_energy_production(12)}")
+        print(f"energy_production next 24 hours: {estimate.sum_energy_production(24)}")
         print(f"timezone: {estimate.timezone}")
+        print(f"account_type: {estimate.account_type}")
         print(forecast.ratelimit)
 
 
