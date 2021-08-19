@@ -24,6 +24,7 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
 
     return None
 
+
 class AccountType(str):
     """Enumeration representing the Forecast.Solar account type."""
 
