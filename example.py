@@ -47,7 +47,7 @@ async def main():
             f"power_production in 24 hours: {estimate.power_production_at_time(estimate.now() + timedelta(hours=24))}"
         )
         print()
-        print(f"energy_current hour: {estimate.energy_current_hour}")
+        print(f"energy_current_hour: {estimate.energy_current_hour}")
         print(f"energy_production next hour: {estimate.sum_energy_production(1)}")
         print(f"energy_production next 6 hours: {estimate.sum_energy_production(6)}")
         print(f"energy_production next 12 hours: {estimate.sum_energy_production(12)}")
