@@ -112,6 +112,11 @@ class ForecastSolar:
             data = await response.json()
             raise ForecastSolarRatelimit(data["message"])
 
+        if response.status == 502:
+            raise ForecastSolarConnectionError(
+                "The Forecast.Solar API is unreachable, "
+            )
+
         response.raise_for_status()
 
         content_type = response.headers.get("Content-Type", "")
