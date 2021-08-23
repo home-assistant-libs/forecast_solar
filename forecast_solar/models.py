@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta, date
+from enum import Enum
 from typing import Any
 import sys
 
@@ -25,7 +26,7 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
     return None
 
 
-class AccountType(str):
+class AccountType(str, Enum):
     """Enumeration representing the Forecast.Solar account type."""
 
     PUBLIC = "public"
@@ -55,7 +56,7 @@ class Estimate:
         return self.api_timezone
 
     @property
-    def account_type(self) -> int:
+    def account_type(self) -> AccountType:
         """Return API account_type information."""
         if self.api_rate_limit == 60:
             return AccountType.PERSONAL
