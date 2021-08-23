@@ -101,6 +101,11 @@ class ForecastSolar:
             ssl=False,
         )
 
+        if response.status == 502:
+            raise ForecastSolarConnectionError(
+                "The Forecast.Solar API is unreachable, "
+            )
+
         if response.status < 500:
             self.ratelimit = Ratelimit.from_response(response)
 
