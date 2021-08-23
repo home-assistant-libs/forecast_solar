@@ -60,7 +60,7 @@ class Estimate:
         """Return API account_type information."""
         if self.api_rate_limit == 60:
             return AccountType.PERSONAL
-        elif self.api_rate_limit == 5:
+        if self.api_rate_limit == 5:
             return AccountType.PROFESSIONAL
         return AccountType.PUBLIC
 
