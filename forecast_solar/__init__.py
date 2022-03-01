@@ -34,6 +34,7 @@ class ForecastSolar:
     damping: float = 0
     session: ClientSession | None = None
     ratelimit: Ratelimit | None = None
+    inverter: float | None = None
 
     async def _request(
         self,
@@ -135,10 +136,13 @@ class ForecastSolar:
         Returns:
             A Estimate object, with a estimated production forecast.
         """
+        params = {"time": "iso8601", "damping": str(self.damping)}
+        if self.inverter is not None:
+            params["inverter"] = str(self.inverter)
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
-            params={"time": "iso8601", "damping": str(self.damping)},
+            params=params,
         )
 
         return Estimate.from_dict(data)
