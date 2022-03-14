@@ -65,6 +65,11 @@ class Estimate:
         return AccountType.PUBLIC
 
     @property
+    def total_energy_production(self) -> list:
+        """Return estimated energy produced per day."""
+        return list(self.wh_days.values())
+
+    @property
     def energy_production_today(self) -> int:
         """Return estimated energy produced today."""
         return self.day_production(self.now().date())

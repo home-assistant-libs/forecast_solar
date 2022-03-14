@@ -22,8 +22,9 @@ async def main():
             print(f"That's in {reset_period}")
             return
 
-        pprint(dataclasses.asdict(estimate))
-        print()
+        # pprint(dataclasses.asdict(estimate))
+        # print()
+        print(f"energy_production: {estimate.total_energy_production}")
         print(f"energy_production_today: {estimate.energy_production_today}")
         print(
             f"power_highest_peak_time_today: {estimate.power_highest_peak_time_today}"

@@ -26,6 +26,7 @@ This library returns a lot of different data, based on the API:
 
 ### Energy
 
+- Total Estimated Energy Production - list per day, depends on api key (kWh)
 - Total Estimated Energy Production - today/tomorrow (kWh)
 - Estimated Energy Production - This Hour (kWh)
 - Estimated Energy Production - Next Hour (kWh)
