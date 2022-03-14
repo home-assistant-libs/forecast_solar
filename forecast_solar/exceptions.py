@@ -21,6 +21,7 @@ class ForecastSolarAuthenticationError(ForecastSolarError):
         super().__init__(f'{data["text"]} (error {data["code"]})')
         self.code = data["code"]
 
+
 class ForecastSolarRequestError(ForecastSolarError):
     """Forecast.Solar wrong request input variables."""
 

@@ -108,7 +108,6 @@ class ForecastSolar:
                 "The Forecast.Solar API is unreachable, "
             )
 
-
         if response.status == 400:
             data = await response.json()
             raise ForecastSolarRequestError(data["message"])
