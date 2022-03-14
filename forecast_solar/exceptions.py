@@ -10,6 +10,18 @@ class ForecastSolarConnectionError(ForecastSolarError):
     """Forecast.Solar API connection exception."""
 
 
+class ForecastSolarAuthenticationError(ForecastSolarError):
+    """Forecast.Solar API authentication exception."""
+
+    def __init__(self, data: dict) -> None:
+        """Init a solar auth error.
+
+        https://doc.forecast.solar/doku.php?id=api#invalid_request
+        """
+        super().__init__(f'{data["text"]} (error {data["code"]})')
+        self.code = data["code"]
+
+
 class ForecastSolarRequestError(ForecastSolarError):
     """Forecast.Solar wrong request input variables."""
 

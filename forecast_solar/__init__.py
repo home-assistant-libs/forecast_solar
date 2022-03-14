@@ -11,6 +11,7 @@ from aiohttp import ClientSession
 from yarl import URL
 
 from .exceptions import (
+    ForecastSolarAuthenticationError,
     ForecastSolarConnectionError,
     ForecastSolarError,
     ForecastSolarRequestError,
@@ -54,6 +55,7 @@ class ForecastSolar:
             the Forecast.Solar API.
 
         Raises:
+            ForecastSolarAuthenticationError: If the API key is invalid.
             ForecastSolarConnectionError: An error occurred while communicating
                 with the Forecast.Solar API.
             ForecastSolarError: Received an unexpected response from the
@@ -106,16 +108,20 @@ class ForecastSolar:
                 "The Forecast.Solar API is unreachable, "
             )
 
-        if response.status < 500:
-            self.ratelimit = Ratelimit.from_response(response)
-
         if response.status == 400:
             data = await response.json()
             raise ForecastSolarRequestError(data["message"])
 
+        if response.status == 403:
+            data = await response.json()
+            raise ForecastSolarAuthenticationError(data["message"])
+
         if response.status == 429:
             data = await response.json()
             raise ForecastSolarRatelimit(data["message"])
+
+        if response.status < 500:
+            self.ratelimit = Ratelimit.from_response(response)
 
         response.raise_for_status()
 
