@@ -113,7 +113,7 @@ class ForecastSolar:
             data = await response.json()
             raise ForecastSolarRequestError(data["message"])
 
-        if response.status == 401 or response.status == 403:
+        if response.status in (401, 403):
             data = await response.json()
             raise ForecastSolarAuthenticationError(data["message"])
 
