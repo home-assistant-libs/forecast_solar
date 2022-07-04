@@ -74,7 +74,6 @@ class ForecastSolar:
         dns = DNSResolver()
         try:
             result = await dns.query("api.forecast.solar", "A")
-            print(result)
         except DNSError as err:
             raise ForecastSolarConnectionError(
                 "Error while resolving Forecast.Solar API address"
