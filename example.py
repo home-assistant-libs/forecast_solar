@@ -1,13 +1,14 @@
+"""Test the python package."""
 import asyncio
 import dataclasses
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pprint import pprint
 
 from forecast_solar import ForecastSolar, ForecastSolarRatelimit
 
 
-async def main():
-    """Simple function to test the output."""
+async def main() -> None:
+    """Test."""
     async with ForecastSolar(
         latitude=52.16, longitude=4.47, declination=20, azimuth=10, kwp=2.160, damping=0
     ) as forecast:

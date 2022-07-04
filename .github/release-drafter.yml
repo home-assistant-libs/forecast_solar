@@ -53,6 +53,6 @@ version-resolver:
   default: patch
 
 template: |
-  ## What’s changed
+  ## What's changed
 
   $CHANGES

@@ -53,6 +53,52 @@ Would you like to contribute to the development of this project? Then read the p
 
 Thank you for being involved! :heart_eyes:
 
+## Setting up development environment
+
+This Python project is fully managed using the [Poetry][poetry] dependencies
+manager.
+
+You need at least:
+
+- Python 3.9+
+- [Poetry][poetry-install]
+
+Install all packages, including all development requirements:
+
+```bash
+poetry install
+```
+
+Poetry creates by default an virtual environment where it installs all
+necessary pip packages, to enter or exit the venv run the following commands:
+
+```bash
+poetry shell
+exit
+```
+
+Setup the pre-commit check, you must run this inside the virtual environment:
+
+```bash
+pre-commit install
+```
+
+*Now you're all set to get started!*
+
+As this repository uses the [pre-commit][pre-commit] framework, all changes
+are linted and tested with each commit. You can run all checks and tests
+manually, using the following command:
+
+```bash
+poetry run pre-commit run --all-files
+```
+
+To run just the Python tests:
+
+```bash
+poetry run pytest
+```
+
 ## License
 
 MIT License
