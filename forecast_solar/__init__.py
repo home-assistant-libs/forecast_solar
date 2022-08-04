@@ -84,7 +84,7 @@ class ForecastSolar:
             )
 
         # Connect as normal
-        url = URL.build(scheme="https", host=result[0].host)
+        url = URL.build(scheme="https", host="api.forecast.solar")
 
         # Add API key if one is provided
         if self.api_key is not None:
