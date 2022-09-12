@@ -9,7 +9,13 @@ from forecast_solar import ForecastSolar, ForecastSolarRatelimit
 async def main():
     """Simple function to test the output."""
     async with ForecastSolar(
-        latitude=52.16, longitude=4.47, declination=20, azimuth=10, kwp=2.160, damping=0
+        latitude=52.16,
+        longitude=4.47,
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        damping=0,
+        horizon="0,0,0,10,10,20,20,30,30",
     ) as forecast:
         try:
             estimate = await forecast.estimate()
