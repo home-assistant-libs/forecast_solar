@@ -20,6 +20,12 @@
 
 With this python library you can request data from [forecast.solar](https://forecast.solar) and see what your solar panels may produce in the coming days.
 
+## Installation
+
+```bash
+pip install forecast-solar
+```
+
 ## Data
 
 This library returns a lot of different data, based on the API:
@@ -46,6 +52,45 @@ This library returns a lot of different data, based on the API:
 - Rate limit
 - Account type
 - Rate remaining
+
+## Example
+
+```python
+import asyncio
+
+from forecast_solar import ForecastSolar
+
+
+async def main() -> None:
+    """Show example on how to use the library."""
+    async with ForecastSolar(
+        api_key="YOUR_API_KEY",
+        latitude=52.16,
+        longitude=4.47,
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        damping=0,
+        damping_morning=0.5,
+        damping_evening=0.5,
+        horizon="0,0,0,10,10,20,20,30,30",
+    ) as forecast:
+        estimate = await forecast.estimate()
+        print(estimate)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+- `api_key` is your API key from [forecast.solar](https://forecast.solar)
+- `declination` is the tilt of the solar panels (required)
+- `azimuth` is the direction the solar panels are facing (required)
+- `kwp` is the size of the solar panels in kWp (required)
+- `damping` is the damping of the solar panels, [read this][forecast-damping] for more information (optional)
+- `damping_morning` is the damping of the solar panels in the morning (optional)
+- `damping_evening` is the damping of the solar panels in the evening (optional)
+- `horizon` is a list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional)
 
 ## Contributing
 
@@ -76,6 +121,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+<!-- LINKS -->
+[forecast-horizon]: https://doc.forecast.solar/doku.php?id=api#horizon
+[forecast-damping]: https://doc.forecast.solar/doku.php?id=damping
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg?style=for-the-badge
