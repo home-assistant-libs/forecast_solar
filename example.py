@@ -15,7 +15,7 @@ async def main():
         azimuth=10,
         kwp=2.160,
         damping=0,
-        horizon="0,0,0,10,10,20,20,30,30"
+        horizon="0,0,0,10,10,20,20,30,30",
     ) as forecast:
         try:
             estimate = await forecast.estimate()
