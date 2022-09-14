@@ -83,14 +83,17 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-- `api_key` is your API key from [forecast.solar](https://forecast.solar)
-- `declination` is the tilt of the solar panels (required)
-- `azimuth` is the direction the solar panels are facing (required)
-- `kwp` is the size of the solar panels in kWp (required)
-- `damping` is the damping of the solar panels, [read this][forecast-damping] for more information (optional)
-- `damping_morning` is the damping of the solar panels in the morning (optional)
-- `damping_evening` is the damping of the solar panels in the evening (optional)
-- `horizon` is a list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional)
+| Parameter | value type | Description |
+| --------- | ---------- | ----------- |
+| `api_key` | `str` | Your API key from [forecast.solar](https://forecast.solar) (optional) |
+| `declination` | `int` | The tilt of the solar panels (required) |
+| `azimuth` | `int` | The direction the solar panels are facing (required) |
+| `kwp` | `float` | The size of the solar panels in kWp (required) |
+| `damping` | `float` | The damping of the solar panels, [read this][forecast-damping] for more information (optional) |
+| `damping_morning` | `float` | The damping of the solar panels in the morning (optional) |
+| `damping_evening` | `float` | The damping of the solar panels in the evening (optional) |
+| `inverter` | `float` | The maximum power of your inverter in kilo watts (optional) |
+| `horizon` | `str` | A list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional) |
 
 ## Contributing
 
