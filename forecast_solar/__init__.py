@@ -33,6 +33,8 @@ class ForecastSolar:
     api_key: str | None = None
     close_session: bool = False
     damping: float = 0
+    damping_morning: float | None = None
+    damping_evening: float | None = None
     horizon: str | None = None
     session: ClientSession | None = None
     ratelimit: Ratelimit | None = None
@@ -148,6 +150,9 @@ class ForecastSolar:
             params["inverter"] = str(self.inverter)
         if self.horizon is not None:
             params["horizon"] = str(self.horizon)
+        if self.damping_morning is not None and self.damping_evening is not None:
+            params["damping_morning"] = self.damping_morning
+            params["damping_evening"] = self.damping_evening
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
