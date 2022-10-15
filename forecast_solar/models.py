@@ -40,14 +40,14 @@ class Estimate:
 
     Attributes:
         watts: Estimated solar power output per time period.
-        wh_hours: Estimated solar energy production ascending over the day.
-        watt_hours_period: Estimated solar energy production differences per hour from the watt_hours array.
+        w_hours: Estimated solar energy production ascending over the day.
+        wh_period: Estimated solar energy production differences per hour from the w_hours array.
         wh_days: Estimated solar energy production per day.
     """
 
     watts: dict[datetime, int]
-    wh_hours: dict[datetime, int]
-    watt_hours_period: dict[datetime, int]
+    w_hours: dict[datetime, int]
+    wh_period: dict[datetime, int]
     wh_days: dict[datetime, int]
     api_rate_limit: int
     api_timezone: str
@@ -94,7 +94,7 @@ class Estimate:
     @property
     def energy_current_hour(self) -> int:
         """Return the estimated energy production for the current hour."""
-        return _timed_value(self.now(), self.wh_hours) or 0
+        return _timed_value(self.now(), self.wh_period) or 0
 
     def day_production(self, specific_date: date) -> int:
         """Return the day production."""
@@ -132,7 +132,7 @@ class Estimate:
 
         total = 0
 
-        for timestamp, wh in self.wh_hours.items():
+        for timestamp, wh in self.wh_period.items():
             # Skip all dates until this hour
             if timestamp < now:
                 continue
@@ -161,11 +161,11 @@ class Estimate:
             watts={
                 datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
             },
-            wh_hours={
+            w_hours={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours"].items()
             },
-            watt_hours_period={
+            wh_period={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_period"].items()
             },
