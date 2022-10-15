@@ -39,14 +39,15 @@ class Estimate:
     """Object holding estimate forecast results from Forecast.Solar.
 
     Attributes:
+        watt_hours_period: Estimated solar energy production differences per hour from the watt_hours array.
         wh_days: Estimated solar energy production per day.
         wh_hours: Estimated solar energy production per hour.
-        watts: Estimated solar power output per hour.
+        wh_hours_period: Estimated solar energy production differences per hour from the watt_hours array.
     """
 
     wh_days: dict[datetime, int]
     wh_hours: dict[datetime, int]
-    watts: dict[datetime, int]
+    watt_hours_period: dict[datetime, int]
     api_rate_limit: int
     api_timezone: str
 
@@ -169,6 +170,10 @@ class Estimate:
             previous_value = energy
 
         return cls(
+            watt_hours_period={
+                datetime.fromisoformat(d): e
+                for d, e in data["result"]["watt_hours_period"].items()
+            },
             wh_days={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_day"].items()
