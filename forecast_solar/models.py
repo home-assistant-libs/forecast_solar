@@ -40,13 +40,11 @@ class Estimate:
 
     Attributes:
         watts: Estimated solar power output per time period.
-        w_hours: Estimated solar energy production ascending over the day.
-        wh_period: Estimated solar energy production differences per hour from the w_hours array.
+        wh_period: Estimated solar energy production differences per hour.
         wh_days: Estimated solar energy production per day.
     """
 
     watts: dict[datetime, int]
-    w_hours: dict[datetime, int]
     wh_period: dict[datetime, int]
     wh_days: dict[datetime, int]
     api_rate_limit: int
@@ -160,10 +158,6 @@ class Estimate:
         return cls(
             watts={
                 datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
-            },
-            w_hours={
-                datetime.fromisoformat(d): e
-                for d, e in data["result"]["watt_hours"].items()
             },
             wh_period={
                 datetime.fromisoformat(d): e
