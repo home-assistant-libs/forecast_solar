@@ -39,15 +39,16 @@ class Estimate:
     """Object holding estimate forecast results from Forecast.Solar.
 
     Attributes:
+        watts: Estimated solar power output per time period.
+        wh_hours: Estimated solar energy production ascending over the day.
         watt_hours_period: Estimated solar energy production differences per hour from the watt_hours array.
         wh_days: Estimated solar energy production per day.
-        wh_hours: Estimated solar energy production per hour.
-        wh_hours_period: Estimated solar energy production differences per hour from the watt_hours array.
     """
 
-    wh_days: dict[datetime, int]
+    watts: dict[datetime, int]
     wh_hours: dict[datetime, int]
     watt_hours_period: dict[datetime, int]
+    wh_days: dict[datetime, int]
     api_rate_limit: int
     api_timezone: str
 
@@ -156,20 +157,14 @@ class Estimate:
         Returns:
             An Estimate object.
         """
-        previous_value = 0
-        wh_hours = {}
-
-        for timestamp, energy in data["result"]["watt_hours"].items():
-            timestamp = datetime.fromisoformat(timestamp)
-
-            # If we get a reset
-            if energy < previous_value:
-                previous_value = 0
-
-            wh_hours[timestamp] = energy - previous_value
-            previous_value = energy
-
         return cls(
+            watts={
+                datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
+            },
+            wh_hours={
+                datetime.fromisoformat(d): e
+                for d, e in data["result"]["watt_hours"].items()
+            },
             watt_hours_period={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_period"].items()
@@ -177,10 +172,6 @@ class Estimate:
             wh_days={
                 datetime.fromisoformat(d): e
                 for d, e in data["result"]["watt_hours_day"].items()
-            },
-            wh_hours=wh_hours,
-            watts={
-                datetime.fromisoformat(d): w for d, w in data["result"]["watts"].items()
             },
             api_rate_limit=data["message"]["ratelimit"]["limit"],
             api_timezone=data["message"]["info"]["timezone"],
