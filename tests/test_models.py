@@ -10,25 +10,25 @@ def test_estimate_previous_day(patch_previous_day):
 
     assert estimate.timezone == "Europe/Amsterdam"
 
-    assert estimate.now().date().isoformat() == "2021-07-20"
+    assert estimate.now().date().isoformat() == "2022-10-15"
 
-    assert estimate.energy_production_today == 12984
-    assert estimate.energy_production_tomorrow == 14679
+    assert estimate.energy_production_today == 4528
+    assert estimate.energy_production_tomorrow == 5435
 
     assert estimate.power_production_now == 0
-    assert estimate.energy_current_hour == 0
+    assert estimate.energy_current_hour == 140
 
     assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2021-07-20T15:00:00+02:00"
+        "2022-10-15T15:00:00+02:00"
     )
     assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
-        "2021-07-21T14:00:00+02:00"
+        "2022-10-16T14:00:00+02:00"
     )
 
     assert estimate.sum_energy_production(1) == 0
     assert estimate.sum_energy_production(6) == 0
-    assert estimate.sum_energy_production(12) == 3631
-    assert estimate.sum_energy_production(24) == 14679
+    assert estimate.sum_energy_production(12) == 760
+    assert estimate.sum_energy_production(24) == 5435
 
 
 def test_estimate_now(patch_now):
@@ -36,23 +36,25 @@ def test_estimate_now(patch_now):
     estimate = models.Estimate.from_dict(PAYLOAD)
 
     assert estimate.timezone == "Europe/Amsterdam"
-    assert estimate.now().date().isoformat() == "2021-07-21"
+    assert estimate.now().date().isoformat() == "2022-10-15"
 
-    assert estimate.energy_production_today == 14679
-    assert estimate.energy_production_tomorrow == 0
+    assert estimate.energy_production_today == 4528
+    assert estimate.energy_production_tomorrow == 5435
 
-    assert estimate.power_production_now == 724
-    assert estimate.energy_current_hour == 724
+    assert estimate.power_production_now == 53
+    assert estimate.energy_current_hour == 24
 
     assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2021-07-21T14:00:00+02:00"
+        "2022-10-15T15:00:00+02:00"
     )
-    assert estimate.power_highest_peak_time_tomorrow is None
+    assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2022-10-16T14:00:00+02:00"
+    )
 
-    assert estimate.sum_energy_production(1) == 1060
-    assert estimate.sum_energy_production(6) == 9044
-    assert estimate.sum_energy_production(12) == 13454
-    assert estimate.sum_energy_production(24) == 13454
+    assert estimate.sum_energy_production(1) == 61
+    assert estimate.sum_energy_production(6) == 2200
+    assert estimate.sum_energy_production(12) == 4504
+    assert estimate.sum_energy_production(24) == 4621
 
 
 def test_estimate_near_end(patch_near_end_today):
@@ -60,20 +62,22 @@ def test_estimate_near_end(patch_near_end_today):
     estimate = models.Estimate.from_dict(PAYLOAD)
 
     assert estimate.timezone == "Europe/Amsterdam"
-    assert estimate.now().date().isoformat() == "2021-07-21"
+    assert estimate.now().date().isoformat() == "2022-10-15"
 
-    assert estimate.energy_production_today == 14679
-    assert estimate.energy_production_tomorrow == 0
+    assert estimate.energy_production_today == 4528
+    assert estimate.energy_production_tomorrow == 5435
 
-    assert estimate.power_production_now == 888
-    assert estimate.energy_current_hour == 888
+    assert estimate.power_production_now == 337
+    assert estimate.energy_current_hour == 502
 
     assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2021-07-21T14:00:00+02:00"
+        "2022-10-15T15:00:00+02:00"
     )
-    assert estimate.power_highest_peak_time_tomorrow is None
+    assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2022-10-16T14:00:00+02:00"
+    )
 
-    assert estimate.sum_energy_production(1) == 548
-    assert estimate.sum_energy_production(6) == 846
-    assert estimate.sum_energy_production(12) == 846
-    assert estimate.sum_energy_production(24) == 846
+    assert estimate.sum_energy_production(1) == 0
+    assert estimate.sum_energy_production(6) == 0
+    assert estimate.sum_energy_production(12) == 0
+    assert estimate.sum_energy_production(24) == 5435
