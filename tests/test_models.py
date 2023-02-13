@@ -41,6 +41,8 @@ def test_estimate_now(patch_now):
     assert estimate.energy_production_today == 4528
     assert estimate.energy_production_tomorrow == 5435
 
+    assert estimate.energy_production_today_remaining  == 4504
+
     assert estimate.power_production_now == 53
     assert estimate.energy_current_hour == 24
 
