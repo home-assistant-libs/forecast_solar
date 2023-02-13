@@ -26,6 +26,29 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
     return None
 
 
+def _interval_value_sum(
+    interval_begin: datetime, interval_end: datetime,
+    data: dict[datetime, int]
+) -> int:
+    """Return the sum of values in interval."""
+
+    total = 0
+
+    print(interval_begin, "/", interval_end)
+
+    for timestamp, wh in data.items():
+        # Skip all until this hour
+        if timestamp < interval_begin:
+            continue
+
+        if timestamp >= interval_end:
+            break
+
+        total += wh
+
+    return total
+
+
 class AccountType(str, Enum):
     """Enumeration representing the Forecast.Solar account type."""
 
@@ -77,10 +100,10 @@ class Estimate:
     @property
     def energy_production_today_remaining(self) -> int:
         """Return estimated energy produced in rest of today."""
-        return self.sum_energy_production_in_interval(
+        return _interval_value_sum(
             self.now(),
-            self.now().replace(hour=0, minute=0, second=0) + timedelta(days=1),
-        )
+            self.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
+            self.wh_period)
 
     @property
     def power_production_now(self) -> int:
@@ -100,7 +123,10 @@ class Estimate:
     @property
     def energy_current_hour(self) -> int:
         """Return the estimated energy production for the current hour."""
-        return _timed_value(self.now(), self.wh_period) or 0
+        return _interval_value_sum(
+            self.now().replace(minute=0, second=0, microsecond=0),
+            self.now().replace(minute=0, second=0, microsecond=0) + timedelta(hours=1),
+            self.wh_period)
 
     def day_production(self, specific_date: date) -> int:
         """Return the day production."""
@@ -133,29 +159,10 @@ class Estimate:
 
     def sum_energy_production(self, period_hours: int) -> int:
         """Return the sum of the energy production."""
-        now = self.now().replace(minute=59, second=59)
+        now = self.now().replace(minute=59, second=59, microsecond=999)
         until = now + timedelta(hours=period_hours)
 
-        return self.sum_energy_production_in_interval(now, until)
-
-    def sum_energy_production_in_interval(
-        self, interval_begin: datetime, interval_end: datetime
-    ) -> int:
-        """Return the sum of the energy production in interval."""
-
-        total = 0
-
-        for timestamp, wh in self.wh_period.items():
-            # Skip all dates until this hour
-            if timestamp < interval_begin:
-                continue
-
-            if timestamp > interval_end:
-                break
-
-            total += wh
-
-        return total
+        return _interval_value_sum(now, until, self.wh_period)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Estimate:
