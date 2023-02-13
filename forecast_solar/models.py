@@ -78,7 +78,7 @@ class Estimate:
     def energy_production_today_remaining(self) -> int:
         """Return estimated energy produced in rest of today."""
         return self.sum_energy_production_in_interval(
-            self.now(), 
+            self.now(),
             self.now().replace(hour=0, minute=0, second=0) + timedelta(days=1),
         )
 
