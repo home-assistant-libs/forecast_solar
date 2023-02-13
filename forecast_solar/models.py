@@ -77,7 +77,10 @@ class Estimate:
     @property
     def energy_production_today_remaining(self) -> int:
         """Return estimated energy produced in rest of today."""
-        return self.sum_energy_production_in_interval(self.now(), self.now().replace(hour=0, minute=0, second=0)+timedelta(days=1))
+        return self.sum_energy_production_in_interval(
+            self.now(), 
+            self.now().replace(hour=0, minute=0, second=0) + timedelta(days=1),
+        )
 
     @property
     def power_production_now(self) -> int:
@@ -134,8 +137,10 @@ class Estimate:
         until = now + timedelta(hours=period_hours)
 
         return self.sum_energy_production_in_interval(now, until)
-        
-    def sum_energy_production_in_interval(self, interval_begin: timestamp, interval_end: timestamp) -> int:
+
+    def sum_energy_production_in_interval(
+        self, interval_begin: datetime, interval_end: datetime
+    ) -> int:
         """Return the sum of the energy production in interval."""
 
         total = 0
