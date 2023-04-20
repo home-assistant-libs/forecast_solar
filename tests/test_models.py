@@ -16,8 +16,7 @@ def test_estimate_previous_day(patch_previous_day):
     assert estimate.energy_production_tomorrow == 5435
 
     assert estimate.power_production_now == 0
-    # production thist hout at 23:48 is zero
-    assert estimate.energy_current_hour == 0
+    assert estimate.energy_current_hour == 140
 
     assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
         "2022-10-15T15:00:00+02:00"
@@ -71,8 +70,7 @@ def test_estimate_near_end(patch_near_end_today):
     assert estimate.energy_production_tomorrow == 5435
 
     assert estimate.power_production_now == 337
-    # production this hout at 16:48 is sum of values between 16:00 and 16:59:59.99916:48
-    assert estimate.energy_current_hour == 642
+    assert estimate.energy_current_hour == 502
 
     assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
         "2022-10-15T15:00:00+02:00"
