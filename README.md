@@ -35,6 +35,7 @@ This library returns a lot of different data, based on the API:
 - Total Estimated Energy Production - today/tomorrow (kWh)
 - Estimated Energy Production - This Hour (kWh)
 - Estimated Energy Production - Next Hour (kWh)
+- Estimated Energy Production - Remaining today (kWh)
 
 ### Power
 
