@@ -106,7 +106,7 @@ Thank you for being involved! :heart_eyes:
 
 MIT License
 
-Copyright (c) 2021-2022 Klaas Schoute
+Copyright (c) 2021-2023 Klaas Schoute
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@ SOFTWARE.
 [forecast-damping]: https://doc.forecast.solar/doku.php?id=damping
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2023.svg?style=for-the-badge
 [contributors-shield]: https://img.shields.io/github/contributors/home-assistant-libs/forecast_solar.svg?style=for-the-badge
 [contributors-url]: https://github.com/home-assistant-libs/forecast_solar/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/home-assistant-libs/forecast_solar.svg?style=for-the-badge
