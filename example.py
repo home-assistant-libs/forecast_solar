@@ -32,7 +32,9 @@ async def main():
         # pprint(dataclasses.asdict(estimate))
         print()
         print(f"energy_production_today: {estimate.energy_production_today}")
-        print(f"energy_production_today_remaining: {estimate.energy_production_today_remaining}")
+        print(
+            f"energy_production_today_remaining: {estimate.energy_production_today_remaining}"
+        )
         print(
             f"power_highest_peak_time_today: {estimate.power_highest_peak_time_today}"
         )
