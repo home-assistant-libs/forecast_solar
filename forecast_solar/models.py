@@ -34,8 +34,6 @@ def _interval_value_sum(
 
     total = 0
 
-    print(interval_begin, "/", interval_end)
-
     for timestamp, wh in data.items():
         # Skip all until this hour
         if timestamp < interval_begin:
