@@ -27,8 +27,7 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
 
 
 def _interval_value_sum(
-    interval_begin: datetime, interval_end: datetime,
-    data: dict[datetime, int]
+    interval_begin: datetime, interval_end: datetime, data: dict[datetime, int]
 ) -> int:
     """Return the sum of values in interval."""
 
@@ -100,8 +99,10 @@ class Estimate:
         """Return estimated energy produced in rest of today."""
         return _interval_value_sum(
             self.now(),
-            self.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1),
-            self.wh_period)
+            self.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            + timedelta(days=1),
+            self.wh_period,
+        )
 
     @property
     def power_production_now(self) -> int:
@@ -124,7 +125,8 @@ class Estimate:
         return _interval_value_sum(
             self.now().replace(minute=0, second=0, microsecond=0),
             self.now().replace(minute=0, second=0, microsecond=0) + timedelta(hours=1),
-            self.wh_period)
+            self.wh_period,
+        )
 
     def day_production(self, specific_date: date) -> int:
         """Return the day production."""
