@@ -10,6 +10,14 @@ class ForecastSolarConnectionError(ForecastSolarError):
     """Forecast.Solar API connection exception."""
 
 
+class ForecastSolarConfigError(ForecastSolarError):
+    """Forecast.Solar API configuration exception."""
+
+    def __init__(self, data: str) -> None:
+        """Init a solar config error."""
+        super().__init__(f"{data} (error 422)")
+
+
 class ForecastSolarAuthenticationError(ForecastSolarError):
     """Forecast.Solar API authentication exception."""
 

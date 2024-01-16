@@ -12,10 +12,11 @@ from yarl import URL
 
 from .exceptions import (
     ForecastSolarAuthenticationError,
+    ForecastSolarConfigError,
     ForecastSolarConnectionError,
     ForecastSolarError,
-    ForecastSolarRequestError,
     ForecastSolarRatelimit,
+    ForecastSolarRequestError,
 )
 from .models import Estimate, Ratelimit
 
@@ -119,6 +120,10 @@ class ForecastSolar:
         if response.status in (401, 403):
             data = await response.json()
             raise ForecastSolarAuthenticationError(data["message"])
+
+        if response.status == 422:
+            data = await response.text()
+            raise ForecastSolarConfigError(data)
 
         if response.status == 429:
             data = await response.json()
