@@ -122,8 +122,8 @@ class ForecastSolar:
             raise ForecastSolarAuthenticationError(data["message"])
 
         if response.status == 422:
-            data = await response.text()
-            raise ForecastSolarConfigError(data)
+            data = await response.json()
+            raise ForecastSolarConfigError(data["message"])
 
         if response.status == 429:
             data = await response.json()

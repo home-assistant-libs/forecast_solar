@@ -15,7 +15,7 @@ class ForecastSolarConfigError(ForecastSolarError):
 
     def __init__(self, data: str) -> None:
         """Init a solar config error."""
-        super().__init__(f"{data} (error 422)")
+        super().__init__(f'{data["text"]} (error 422)')
 
 
 class ForecastSolarAuthenticationError(ForecastSolarError):
