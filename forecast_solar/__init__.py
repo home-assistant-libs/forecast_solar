@@ -150,7 +150,7 @@ class ForecastSolar:
 
         return await response.json()
 
-    async def validate_plane(self):
+    async def validate_plane(self) -> bool:
         """Validate plane by calling the Forecast.Solar API
 
         Returns:
@@ -166,7 +166,7 @@ class ForecastSolar:
 
         return True
 
-    async def validate_api_key(self):
+    async def validate_api_key(self) -> bool:
         """Validate api key by calling the Forecast.Solar API
 
         Returns:
