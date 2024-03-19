@@ -26,8 +26,10 @@ class ForecastSolarAuthenticationError(ForecastSolarError):
 
         https://doc.forecast.solar/doku.php?id=api#invalid_request
         """
-        super().__init__(f'{data["text"]} (error {data["code"]})')
-        self.code = data["code"]
+        # seems that code is missing in response in some endpoints (i.e /info)
+        code = data.get("code")
+        super().__init__(f'{data["text"]} (error {code})')
+        self.code = code
 
 
 class ForecastSolarRequestError(ForecastSolarError):
