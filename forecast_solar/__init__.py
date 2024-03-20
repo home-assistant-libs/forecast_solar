@@ -108,7 +108,7 @@ class ForecastSolar:
             ssl=False,
         )
 
-        if response.status == 502:
+        if response.status in (502, 503):
             raise ForecastSolarConnectionError(
                 "The Forecast.Solar API is unreachable, "
             )
