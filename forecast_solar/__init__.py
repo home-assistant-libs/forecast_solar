@@ -44,9 +44,9 @@ class ForecastSolar:
     async def _request(
         self,
         uri: str,
+        *,
         rate_limit=True,
         authenticate=True,
-        *,
         params: Mapping[str, str] | None = None,
     ) -> dict[str, Any]:
         """Handle a request to the Forecast.Solar API.
@@ -160,8 +160,8 @@ class ForecastSolar:
         await self._request(
             f"check/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
-            False,
-            False,
+            rate_limit=False,
+            authenticate=False,
         )
 
         return True
@@ -173,7 +173,7 @@ class ForecastSolar:
             True, if api key is valid
         """
 
-        await self._request("info", False)
+        await self._request("info", rate_limit=False)
 
         return True
 
