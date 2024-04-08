@@ -54,6 +54,11 @@ This library returns a lot of different data, based on the API:
 - Account type
 - Rate remaining
 
+### Validation
+
+- API key (bool)
+- Plane (bool)
+
 ## Example
 
 ```python
