@@ -45,6 +45,8 @@ class ForecastSolar:
         self,
         uri: str,
         *,
+        rate_limit=True,
+        authenticate=True,
         params: Mapping[str, str] | None = None,
     ) -> dict[str, Any]:
         """Handle a request to the Forecast.Solar API.
@@ -54,6 +56,10 @@ class ForecastSolar:
 
         Args:
             uri: Request URI, for example, 'estimate'
+            rate_limit: Parse rate limit from response. Set to False for
+                endpoints that are missing rate limiting headers in response.
+            authenticate: Prefix request with api_key. Set to False for
+                endpoints that do not provide authentication.
 
         Returns:
             A Python dictionary (JSON decoded) with the response from
@@ -91,7 +97,7 @@ class ForecastSolar:
         url = URL.build(scheme="https", host=result[0].host)
 
         # Add API key if one is provided
-        if self.api_key is not None:
+        if authenticate and self.api_key is not None:
             url = url.with_path(f"{self.api_key}/")
 
         url = url.join(URL(uri))
@@ -129,7 +135,7 @@ class ForecastSolar:
             data = await response.json()
             raise ForecastSolarRatelimit(data["message"])
 
-        if response.status < 500:
+        if rate_limit and response.status < 500:
             self.ratelimit = Ratelimit.from_response(response)
 
         response.raise_for_status()
@@ -143,6 +149,33 @@ class ForecastSolar:
             )
 
         return await response.json()
+
+    async def validate_plane(self) -> bool:
+        """Validate plane by calling the Forecast.Solar API
+
+        Returns:
+            True, if plane is valid.
+        """
+
+        await self._request(
+            f"check/{self.latitude}/{self.longitude}"
+            f"/{self.declination}/{self.azimuth}/{self.kwp}",
+            rate_limit=False,
+            authenticate=False,
+        )
+
+        return True
+
+    async def validate_api_key(self) -> bool:
+        """Validate api key by calling the Forecast.Solar API
+
+        Returns:
+            True, if api key is valid
+        """
+
+        await self._request("info", rate_limit=False)
+
+        return True
 
     async def estimate(self) -> Estimate:
         """Get solar production estimations from the Forecast.Solar API.
