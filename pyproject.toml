@@ -36,6 +36,7 @@ yarl = ">=1.6.0"
 Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
 
 [tool.poetry.group.dev.dependencies]
+black = "24.4.2"
 covdefaults = "2.3.0"
 coverage = {version = "7.5.0", extras = ["toml"]}
 flake8 = "7.0.0"

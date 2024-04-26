@@ -1,4 +1,5 @@
 """Exceptions for Forecast.Solar."""
+
 from datetime import datetime
 
 

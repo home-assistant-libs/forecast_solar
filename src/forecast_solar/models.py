@@ -1,4 +1,5 @@
 """Data models for the Forecast.Solar API."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,4 +1,5 @@
 """Test the models."""
+
 from datetime import datetime
 from forecast_solar import models
 from . import PAYLOAD, patch_now, patch_previous_day, patch_near_end_today
