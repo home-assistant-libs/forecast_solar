@@ -48,6 +48,7 @@ plugins = ["covdefaults"]
 source = ["forecast_solar"]
 
 [tool.coverage.report]
+fail_under = 60
 show_missing = true
 
 [tool.pytest.ini_options]
