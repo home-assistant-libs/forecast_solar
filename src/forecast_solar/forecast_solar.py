@@ -1,4 +1,5 @@
 """Asynchronous Python client for the Forecast.Solar API."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping

@@ -15,17 +15,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.0.2
+      - name: 🏗 Set up Poetry
+        run: pipx install poetry
       - name: Set up Python 3.11
         uses: actions/setup-python@v4.2.0
         with:
           python-version: 3.11
-      - name: Install dependencies
+      - name: 🏗 Install workflow dependencies
         run: |
-          pip install .
-          pip install -r requirements-test.txt
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+      - name: 🏗 Install dependencies
+        run: poetry install --no-interaction
       - name: Lint with flake8
         run: |
-          flake8 forecast_solar
-      - name: Run tests
+          poetry run flake8 src/forecast_solar
+      - name: 🚀 Run pytest
         run: |
-          pytest tests
+          poetry run pytest -v --cov src tests

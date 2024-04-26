@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "forecast-solar"
+version = "0.0.0"
+description = "Asynchronous Python client for getting forecast solar information"
+authors = ["Klaas Schoute <hello@student-techlife.com>"]
+maintainers = ["Klaas Schoute <hello@student-techlife.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/home-assistant-libs/forecast_solar"
+repository = "https://github.com/home-assistant-libs/forecast_solar"
+documentation = "https://github.com/home-assistant-libs/forecast_solar"
+keywords = ["forecast", "solar", "power", "energy", "api", "async", "client"]
+classifiers = [
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [
+    { include = "forecast_solar", from = "src" },
+]
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.0.0"
+aiodns = ">=3.0.0"
+python = "^3.11"
+yarl = ">=1.6.0"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/home-assistant-libs/forecast_solar/issues"
+Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
+
+[tool.poetry.group.dev.dependencies]
+black = "24.4.2"
+covdefaults = "2.3.0"
+coverage = {version = "7.5.0", extras = ["toml"]}
+flake8 = "7.0.0"
+pytest = "8.1.1"
+pytest-asyncio = "0.23.6"
+pytest-cov = "5.0.0"
+
+[tool.coverage.run]
+plugins = ["covdefaults"]
+source = ["forecast_solar"]
+
+[tool.coverage.report]
+fail_under = 60
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov"
+asyncio_mode = "auto"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]

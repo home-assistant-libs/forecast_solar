@@ -107,6 +107,36 @@ Would you like to contribute to the development of this project? Then read the p
 
 Thank you for being involved! :heart_eyes:
 
+## Setting up development environment
+
+This Python project relies on [Poetry][poetry] as its dependency manager,
+providing comprehensive management and control over project dependencies.
+
+You need at least:
+
+- Python 3.11+
+- [Poetry][poetry-install]
+
+Install all packages, including all development requirements:
+
+```bash
+poetry install
+```
+
+Poetry creates by default an virtual environment where it installs all
+necessary pip packages, to enter or exit the venv run the following commands:
+
+```bash
+poetry shell
+exit
+```
+
+To run just the Python tests:
+
+```bash
+poetry run pytest
+```
+
 ## License
 
 MIT License
@@ -149,3 +179,6 @@ SOFTWARE.
 [commits-shield]: https://img.shields.io/github/commit-activity/y/home-assistant-libs/forecast_solar.svg?style=for-the-badge
 [commits]: https://github.com/home-assistant-libs/forecast_solar/commits/master
 [last-commit-shield]: https://img.shields.io/github/last-commit/home-assistant-libs/forecast_solar.svg?style=for-the-badge
+
+[poetry-install]: https://python-poetry.org/docs/#installation
+[poetry]: https://python-poetry.org
