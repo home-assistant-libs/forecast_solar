@@ -2,16 +2,11 @@
 
 from __future__ import annotations
 
+from zoneinfo import ZoneInfo
 from dataclasses import dataclass
 from datetime import datetime, timedelta, date
 from enum import Enum
 from typing import Any
-import sys
-
-if sys.version_info[:2] >= (3, 9):
-    import zoneinfo
-else:
-    from backports import zoneinfo
 
 from aiohttp import ClientResponse
 
@@ -139,7 +134,7 @@ class Estimate:
 
     def now(self) -> datetime:
         """Return the current timestamp in the API timezone."""
-        return datetime.now(tz=zoneinfo.ZoneInfo(self.api_timezone))
+        return datetime.now(tz=ZoneInfo(self.api_timezone))
 
     def peak_production_time(self, specific_date: date) -> datetime:
         """Return the peak time on a specific date."""
@@ -166,7 +161,7 @@ class Estimate:
         return _interval_value_sum(now, until, self.wh_period)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Estimate:
+    def from_dict(cls: type[Estimate], data: dict[str, Any]) -> Estimate:
         """Return a Estimate object from a Forecast.Solar API response.
 
         Converts a dictionary, obtained from the Forecast.Solar API into
@@ -205,7 +200,7 @@ class Ratelimit:
     retry_at: datetime | None
 
     @classmethod
-    def from_response(cls, response: ClientResponse) -> Ratelimit:
+    def from_response(cls: type[Ratelimit], response: ClientResponse) -> Ratelimit:
         """Initialize rate limit object from response."""
         # The documented headers do not match the returned headers
         # https://doc.forecast.solar/doku.php?id=api#headers

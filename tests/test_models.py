@@ -1,88 +1,147 @@
 """Test the models."""
 
+import pytest
 from datetime import datetime
-from forecast_solar import models
-from . import PAYLOAD, patch_now, patch_previous_day, patch_near_end_today
+from aresponses import ResponsesMockServer
+from syrupy.assertion import SnapshotAssertion
+
+from forecast_solar import ForecastSolar, Estimate, AccountType
 
 
-def test_estimate_previous_day(patch_previous_day):
-    """Test estimate."""
-    estimate = models.Estimate.from_dict(PAYLOAD)
+from . import load_fixtures
 
-    assert estimate.timezone == "Europe/Amsterdam"
 
-    assert estimate.now().date().isoformat() == "2022-10-15"
-
-    assert estimate.energy_production_today == 4528
-    assert estimate.energy_production_tomorrow == 5435
-
-    assert estimate.power_production_now == 0
-    # production this hour at 23:48 is zero
-    assert estimate.energy_current_hour == 0
-
-    assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2022-10-15T15:00:00+02:00"
+@pytest.mark.freeze_time("2024-04-26T12:00:00+02:00")
+async def test_estimated_forecast(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    forecast_client: ForecastSolar,
+) -> None:
+    """Test estimated forecast."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/estimate/52.16/4.47/20/10/2.16",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("forecast.json"),
+        ),
     )
-    assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
-        "2022-10-16T14:00:00+02:00"
+    forecast: Estimate = await forecast_client.estimate()
+    assert forecast == snapshot
+    assert forecast.timezone == "Europe/Amsterdam"
+    assert forecast.account_type == AccountType.PUBLIC
+
+    assert forecast.energy_production_today == 6660
+    assert forecast.energy_production_tomorrow == 5338
+
+    assert forecast.power_production_now == 773
+    assert forecast.energy_production_today_remaining == 4144
+    assert forecast.energy_current_hour == 821
+
+    assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
+        "2024-04-26T11:00:00+02:00"
     )
-
-    assert estimate.sum_energy_production(1) == 0
-    assert estimate.sum_energy_production(6) == 0
-    assert estimate.sum_energy_production(12) == 760
-    assert estimate.sum_energy_production(24) == 5435
-
-
-def test_estimate_now(patch_now):
-    """Test estimate."""
-    estimate = models.Estimate.from_dict(PAYLOAD)
-
-    assert estimate.timezone == "Europe/Amsterdam"
-    assert estimate.now().date().isoformat() == "2022-10-15"
-
-    assert estimate.energy_production_today == 4528
-    assert estimate.energy_production_tomorrow == 5435
-
-    assert estimate.energy_production_today_remaining == 4504
-
-    assert estimate.power_production_now == 53
-    assert estimate.energy_current_hour == 24
-
-    assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2022-10-15T15:00:00+02:00"
-    )
-    assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
-        "2022-10-16T14:00:00+02:00"
+    assert forecast.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2024-04-27T12:00:00+02:00"
     )
 
-    assert estimate.sum_energy_production(1) == 61
-    assert estimate.sum_energy_production(6) == 2200
-    assert estimate.sum_energy_production(12) == 4504
-    assert estimate.sum_energy_production(24) == 4621
+    assert forecast.sum_energy_production(1) == 742
+    assert forecast.sum_energy_production(6) == 3093
+    assert forecast.sum_energy_production(12) == 3323
+    assert forecast.sum_energy_production(24) == 5633
 
 
-def test_estimate_near_end(patch_near_end_today):
-    """Test estimate."""
-    estimate = models.Estimate.from_dict(PAYLOAD)
-
-    assert estimate.timezone == "Europe/Amsterdam"
-    assert estimate.now().date().isoformat() == "2022-10-15"
-
-    assert estimate.energy_production_today == 4528
-    assert estimate.energy_production_tomorrow == 5435
-
-    assert estimate.power_production_now == 337
-    # production this hour at 16:48 is sum of values between 16:00 and 16:59:59.999
-    assert estimate.energy_current_hour == 642
-
-    assert estimate.power_highest_peak_time_today == datetime.fromisoformat(
-        "2022-10-15T15:00:00+02:00"
+@pytest.mark.freeze_time("2024-04-27T07:00:00+02:00")
+async def test_estimated_forecast_with_subscription(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    forecast_key_client: ForecastSolar,
+) -> None:
+    """Test estimated forecast."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/myapikey/estimate/52.16/4.47/20/10/2.16",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "60",
+                "X-Ratelimit-Period": "3600",
+            },
+            text=load_fixtures("forecast_personal.json"),
+        ),
     )
-    assert estimate.power_highest_peak_time_tomorrow == datetime.fromisoformat(
-        "2022-10-16T14:00:00+02:00"
+    forecast: Estimate = await forecast_key_client.estimate()
+    assert forecast == snapshot
+    assert forecast.timezone == "Europe/Amsterdam"
+    assert forecast.account_type == AccountType.PERSONAL
+
+    assert forecast.energy_production_today == 5788
+    assert forecast.energy_production_tomorrow == 7507
+
+    assert forecast.power_production_now == 92
+    assert forecast.energy_production_today_remaining == 5783
+    assert forecast.energy_current_hour == 96
+
+    assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
+        "2024-04-27T13:30:00+02:00"
+    )
+    assert forecast.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2024-04-28T14:30:00+02:00"
     )
 
-    assert estimate.sum_energy_production(1) == 0
-    assert estimate.sum_energy_production(6) == 0
-    assert estimate.sum_energy_production(12) == 0
-    assert estimate.sum_energy_production(24) == 5435
+    assert forecast.sum_energy_production(1) == 216
+    assert forecast.sum_energy_production(6) == 2802
+    assert forecast.sum_energy_production(12) == 5582
+    assert forecast.sum_energy_production(24) == 5784
+
+
+async def test_api_key_validation(
+    aresponses: ResponsesMockServer,
+    forecast_key_client: ForecastSolar,
+) -> None:
+    """Test API key validation."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/myapikey/info",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("validate_key.json"),
+        ),
+    )
+    assert await forecast_key_client.validate_api_key() is True
+
+
+async def test_plane_validation(
+    aresponses: ResponsesMockServer,
+    forecast_client: ForecastSolar,
+) -> None:
+    """Test plane validation."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/check/52.16/4.47/20/10/2.16",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("validate_plane.json"),
+        ),
+    )
+    assert await forecast_client.validate_plane() is True
