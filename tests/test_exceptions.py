@@ -1,3 +1,5 @@
+"""Text exceptions raised by the Forecast.Solar API client."""
+
 import pytest
 from aresponses import ResponsesMockServer
 

@@ -69,39 +69,6 @@ async def test_internal_session(aresponses: ResponsesMockServer) -> None:
         await client._request("test")
 
 
-# async def test_timeout(aresponses: ResponsesMockServer) -> None:
-#     """Test request timeout is handled correctly."""
-
-#     # Faking a timeout by sleeping
-#     async def response_handler(_: ClientResponse) -> Response:
-#         await asyncio.sleep(0.2)
-#         return aresponses.Response(
-#             body="Goodmorning!"
-#         )
-
-#     aresponses.add(
-#         "api.forecast.solar",
-#         "/test",
-#         "GET",
-#         response_handler,
-#     )
-
-#     async with ClientSession() as session:
-#         client = ForecastSolar(
-#             latitude=52.16,
-#             longitude=4.47,
-#             declination=20,
-#             azimuth=10,
-#             kwp=2.160,
-#             damping=0,
-#             horizon="0,0,0,10,10,20,20,30,30",
-#             session=session,
-#             request_timeout=0.1,
-#         )
-#         with pytest.raises(ForecastSolarConnectionError):
-#             await client._request("test")
-
-
 async def test_content_type(
     aresponses: ResponsesMockServer,
     forecast_client: ForecastSolar,
@@ -122,27 +89,3 @@ async def test_content_type(
     )
     with pytest.raises(ForecastSolarError):
         assert await forecast_client._request("test")
-
-
-# async def test_client_error() -> None:
-#     """Test request client error handling."""
-#     async with ClientSession() as session:
-#         client = ForecastSolar(
-#             latitude=52.16,
-#             longitude=4.47,
-#             declination=20,
-#             azimuth=10,
-#             kwp=2.160,
-#             damping=0,
-#             horizon="0,0,0,10,10,20,20,30,30",
-#             session=session,
-#         )
-#         with (
-#             patch.object(
-#                 session,
-#                 "request",
-#                 side_effect=ClientError(),
-#             ),
-#             pytest.raises(ForecastSolarConnectionError),
-#         ):
-#             assert await client._request("test")
