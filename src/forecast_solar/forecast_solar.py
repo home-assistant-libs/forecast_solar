@@ -85,12 +85,14 @@ class ForecastSolar:
         try:
             result = await dns.query("api.forecast.solar", "A")
         except DNSError as err:
-            msg = "Error while resolving Forecast.Solar API address"
-            raise ForecastSolarConnectionError(msg) from err
+            raise ForecastSolarConnectionError(
+                "Error while resolving Forecast.Solar API address"
+            ) from err
 
         if not result:
-            msg = "Could not resolve Forecast.Solar API address"
-            raise ForecastSolarConnectionError(msg)
+            raise ForecastSolarConnectionError(
+                "Could not resolve Forecast.Solar API address"
+            )
 
         # Connect as normal
         url = URL.build(scheme="https", host=result[0].host)
@@ -114,8 +116,7 @@ class ForecastSolar:
         )
 
         if response.status in (502, 503):
-            msg = "The Forecast.Solar API is unreachable"
-            raise ForecastSolarConnectionError(msg)
+            raise ForecastSolarConnectionError("The Forecast.Solar API is unreachable")
 
         if response.status == 400:
             data = await response.json()
@@ -141,9 +142,8 @@ class ForecastSolar:
         content_type = response.headers.get("Content-Type", "")
         if "application/json" not in content_type:
             text = await response.text()
-            msg = "Unexpected response from the Forecast.Solar API"
             raise ForecastSolarError(
-                msg,
+                "Unexpected response from the Forecast.Solar API",
                 {"Content-Type": content_type, "response": text},
             )
 
