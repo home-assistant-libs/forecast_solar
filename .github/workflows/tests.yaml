@@ -69,8 +69,6 @@ jobs:
           poetry config virtualenvs.in-project true
       - name: 🏗 Install dependencies
         run: poetry install --no-interaction
-      - name: 🚀 Process coverage results
-        run: poetry run coverage xml -i
       - name: 🚀 Upload coverage report
         uses: codecov/codecov-action@v4.3.0
         with:
