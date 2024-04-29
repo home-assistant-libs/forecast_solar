@@ -38,12 +38,12 @@ jobs:
         run: |
           poetry run flake8 src/forecast_solar
       - name: 🚀 Run pytest
-        run: poetry run pytest -v --cov src tests
+        run: poetry run pytest -v --cov-report xml:coverage.xml --cov src tests
       - name: ⬆️ Upload coverage artifact
         uses: actions/upload-artifact@v4.3.3
         with:
           name: coverage-${{ matrix.python }}
-          path: .coverage
+          path: coverage.xml
 
   coverage:
     runs-on: ubuntu-latest
@@ -69,10 +69,6 @@ jobs:
           poetry config virtualenvs.in-project true
       - name: 🏗 Install dependencies
         run: poetry install --no-interaction
-      - name: 🚀 Process coverage results
-        run: |
-          poetry run coverage combine coverage*/.coverage*
-          poetry run coverage xml -i
       - name: 🚀 Upload coverage report
         uses: codecov/codecov-action@v4.3.0
         with:
