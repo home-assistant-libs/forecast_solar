@@ -35,20 +35,22 @@ yarl = ">=1.6.0"
 Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
 
 [tool.poetry.group.dev.dependencies]
+aresponses = "3.0.0"
 black = "24.4.2"
 covdefaults = "2.3.0"
-coverage = {version = "7.5.0", extras = ["toml"]}
 flake8 = "7.0.0"
 pytest = "8.1.1"
 pytest-asyncio = "0.23.6"
 pytest-cov = "5.0.0"
+pytest-freezer = "0.4.8"
+syrupy = "4.6.1"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
 source = ["forecast_solar"]
 
 [tool.coverage.report]
-fail_under = 60
+fail_under = 90
 show_missing = true
 
 [tool.pytest.ini_options]

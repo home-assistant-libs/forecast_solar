@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
@@ -33,14 +32,15 @@ class ForecastSolar:
     longitude: float
 
     api_key: str | None = None
-    close_session: bool = False
     damping: float = 0
     damping_morning: float | None = None
     damping_evening: float | None = None
     horizon: str | None = None
+
     session: ClientSession | None = None
     ratelimit: Ratelimit | None = None
     inverter: float | None = None
+    _close_session: bool = False
 
     async def _request(
         self,
@@ -48,7 +48,7 @@ class ForecastSolar:
         *,
         rate_limit=True,
         authenticate=True,
-        params: Mapping[str, str] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Handle a request to the Forecast.Solar API.
 
@@ -105,7 +105,7 @@ class ForecastSolar:
 
         if self.session is None:
             self.session = ClientSession()
-            self.close_session = True
+            self._close_session = True
 
         response = await self.session.request(
             "GET",
@@ -116,9 +116,7 @@ class ForecastSolar:
         )
 
         if response.status in (502, 503):
-            raise ForecastSolarConnectionError(
-                "The Forecast.Solar API is unreachable, "
-            )
+            raise ForecastSolarConnectionError("The Forecast.Solar API is unreachable")
 
         if response.status == 400:
             data = await response.json()
@@ -202,7 +200,7 @@ class ForecastSolar:
 
     async def close(self) -> None:
         """Close open client session."""
-        if self.session and self.close_session:
+        if self.session and self._close_session:
             await self.session.close()
 
     async def __aenter__(self) -> ForecastSolar:
