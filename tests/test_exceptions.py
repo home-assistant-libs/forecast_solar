@@ -8,8 +8,10 @@ from forecast_solar import (
     ForecastSolarRatelimitError,
     ForecastSolarConfigError,
     ForecastSolarAuthenticationError,
-    ForecastSolarRequestError,
+    ForecastSolarConfigError,
     ForecastSolarConnectionError,
+    ForecastSolarRatelimit,
+    ForecastSolarRequestError,
 )
 
 from . import load_fixtures

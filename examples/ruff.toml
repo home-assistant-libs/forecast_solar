@@ -2,5 +2,6 @@
 extend = "../pyproject.toml"
 
 lint.extend-ignore = [
-  "T201", # Allow the use of print() in examples
+  "T201",   # Allow the use of print() in examples
+  "ERA001", # Allow the use of comments in examples
 ]

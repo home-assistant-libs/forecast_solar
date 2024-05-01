@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from zoneinfo import ZoneInfo
 from dataclasses import dataclass
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
+from zoneinfo import ZoneInfo
 
-from aiohttp import ClientResponse
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse
 
 
 def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
@@ -26,7 +27,6 @@ def _interval_value_sum(
     interval_begin: datetime, interval_end: datetime, data: dict[datetime, int]
 ) -> int:
     """Return the sum of values in interval."""
-
     total = 0
 
     for timestamp, wh in data.items():
@@ -54,10 +54,12 @@ class AccountType(str, Enum):
 class Estimate:
     """Object holding estimate forecast results from Forecast.Solar.
 
-    Attributes:
+    Attributes
+    ----------
         watts: Estimated solar power output per time period.
         wh_period: Estimated solar energy production differences per hour.
         wh_days: Estimated solar energy production per day.
+
     """
 
     watts: dict[datetime, int]
@@ -148,6 +150,7 @@ class Estimate:
         ) in self.watts.items():
             if watt == value:
                 return timestamp
+        return None
 
     def power_production_at_time(self, time: datetime) -> int:
         """Return estimated power production at a specific time."""
@@ -168,10 +171,13 @@ class Estimate:
         a Estimate object.
 
         Args:
+        ----
             data: The estimate response from the Forecast.Solar API.
 
         Returns:
+        -------
             An Estimate object.
+
         """
         return cls(
             watts={

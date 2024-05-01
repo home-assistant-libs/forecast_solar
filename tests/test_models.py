@@ -1,12 +1,12 @@
 """Test the models."""
 
-import pytest
 from datetime import datetime
+
+import pytest
 from aresponses import ResponsesMockServer
 from syrupy.assertion import SnapshotAssertion
 
-from forecast_solar import ForecastSolar, Estimate, AccountType
-
+from forecast_solar import AccountType, Estimate, ForecastSolar
 
 from . import load_fixtures
 

@@ -1,13 +1,14 @@
+"""Example of how to get an estimate from the Forecast.Solar API."""
+
 import asyncio
-import dataclasses
-from datetime import datetime, timezone, timedelta
-from pprint import pprint
+from datetime import UTC, datetime, timedelta
+from pprint import pprint  # noqa: F401
 
 from forecast_solar import ForecastSolar, ForecastSolarRatelimitError
 
 
-async def main():
-    """Simple function to test the output."""
+async def main() -> None:
+    """Get an estimate from the Forecast.Solar API."""
     async with ForecastSolar(
         latitude=52.16,
         longitude=4.47,
@@ -22,7 +23,7 @@ async def main():
         except ForecastSolarRatelimitError as err:
             print("Ratelimit reached")
             print(f"Rate limit resets at {err.reset_at}")
-            reset_period = err.reset_at - datetime.now(timezone.utc)
+            reset_period = err.reset_at - datetime.now(UTC)
             # Strip microseconds as they are not informative
             reset_period -= timedelta(microseconds=reset_period.microseconds)
             print(f"That's in {reset_period}")
@@ -33,28 +34,34 @@ async def main():
         print()
         print(f"energy_production_today: {estimate.energy_production_today}")
         print(
-            f"energy_production_today_remaining: {estimate.energy_production_today_remaining}"
+            f"energy_production_today_remaining: "
+            f"{estimate.energy_production_today_remaining}"
         )
         print(
             f"power_highest_peak_time_today: {estimate.power_highest_peak_time_today}"
         )
         print(f"energy_production_tomorrow: {estimate.energy_production_tomorrow}")
         print(
-            f"power_highest_peak_time_tomorrow: {estimate.power_highest_peak_time_tomorrow}"
+            f"power_highest_peak_time_tomorrow: "
+            f"{estimate.power_highest_peak_time_tomorrow}"
         )
         print()
         print(f"power_production_now: {estimate.power_production_now}")
         print(
-            f"power_production in 1 hour: {estimate.power_production_at_time(estimate.now() + timedelta(hours=1))}"
+            f"power_production in 1 hour: "
+            f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=1))}"
         )
         print(
-            f"power_production in 6 hours: {estimate.power_production_at_time(estimate.now() + timedelta(hours=6))}"
+            f"power_production in 6 hours: "
+            f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=6))}"
         )
         print(
-            f"power_production in 12 hours: {estimate.power_production_at_time(estimate.now() + timedelta(hours=12))}"
+            f"power_production in 12 hours: "
+            f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=12))}"
         )
         print(
-            f"power_production in 24 hours: {estimate.power_production_at_time(estimate.now() + timedelta(hours=24))}"
+            f"power_production in 24 hours: "
+            f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=24))}"
         )
         print()
         print(f"energy_current_hour: {estimate.energy_current_hour}")

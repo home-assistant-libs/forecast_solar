@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Self
 
 from aiodns import DNSResolver
 from aiodns.error import DNSError
@@ -46,8 +46,8 @@ class ForecastSolar:
         self,
         uri: str,
         *,
-        rate_limit=True,
-        authenticate=True,
+        rate_limit: bool = True,
+        authenticate: bool = True,
         params: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Handle a request to the Forecast.Solar API.
@@ -56,6 +56,7 @@ class ForecastSolar:
         the Forecast.Solar API.
 
         Args:
+        ----
             uri: Request URI, for example, 'estimate'
             rate_limit: Parse rate limit from response. Set to False for
                 endpoints that are missing rate limiting headers in response.
@@ -63,10 +64,12 @@ class ForecastSolar:
                 endpoints that do not provide authentication.
 
         Returns:
+        -------
             A Python dictionary (JSON decoded) with the response from
             the Forecast.Solar API.
 
         Raises:
+        ------
             ForecastSolarAuthenticationError: If the API key is invalid.
             ForecastSolarConnectionError: An error occurred while communicating
                 with the Forecast.Solar API.
@@ -76,8 +79,8 @@ class ForecastSolar:
                 variables used in the request.
             ForecastSolarRatelimitError: The number of requests has exceeded
                 the rate limit of the Forecast.Solar API.
-        """
 
+        """
         # Forecast.Solar is currently experiencing IPv6 issues.
         # However, their DNS does return an non-working IPv6 address.
         # This ensures we use the IPv4 address.
@@ -150,12 +153,13 @@ class ForecastSolar:
         return await response.json()
 
     async def validate_plane(self) -> bool:
-        """Validate plane by calling the Forecast.Solar API
+        """Validate plane by calling the Forecast.Solar API.
 
-        Returns:
+        Returns
+        -------
             True, if plane is valid.
-        """
 
+        """
         await self._request(
             f"check/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
@@ -166,12 +170,13 @@ class ForecastSolar:
         return True
 
     async def validate_api_key(self) -> bool:
-        """Validate api key by calling the Forecast.Solar API
+        """Validate api key by calling the Forecast.Solar API.
 
-        Returns:
+        Returns
+        -------
             True, if api key is valid
-        """
 
+        """
         await self._request("info", rate_limit=False)
 
         return True
@@ -179,8 +184,10 @@ class ForecastSolar:
     async def estimate(self) -> Estimate:
         """Get solar production estimations from the Forecast.Solar API.
 
-        Returns:
+        Returns
+        -------
             A Estimate object, with a estimated production forecast.
+
         """
         params = {"time": "iso8601", "damping": str(self.damping)}
         if self.inverter is not None:
@@ -203,18 +210,22 @@ class ForecastSolar:
         if self.session and self._close_session:
             await self.session.close()
 
-    async def __aenter__(self) -> ForecastSolar:
+    async def __aenter__(self) -> Self:
         """Async enter.
 
-        Returns:
+        Returns
+        -------
             The ForecastSolar object.
+
         """
         return self
 
-    async def __aexit__(self, *_exc_info) -> None:
+    async def __aexit__(self, *_exc_info: object) -> None:
         """Async exit.
 
         Args:
+        ----
             _exc_info: Exec type.
+
         """
         await self.close()
