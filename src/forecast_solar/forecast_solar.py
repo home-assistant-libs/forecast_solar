@@ -15,7 +15,7 @@ from .exceptions import (
     ForecastSolarConfigError,
     ForecastSolarConnectionError,
     ForecastSolarError,
-    ForecastSolarRatelimit,
+    ForecastSolarRatelimitError,
     ForecastSolarRequestError,
 )
 from .models import Estimate, Ratelimit
@@ -74,7 +74,7 @@ class ForecastSolar:
                 Forecast.Solar API.
             ForecastSolarRequestError: There is something wrong with the
                 variables used in the request.
-            ForecastSolarRatelimit: The number of requests has exceeded
+            ForecastSolarRatelimitError: The number of requests has exceeded
                 the rate limit of the Forecast.Solar API.
         """
 
@@ -132,7 +132,7 @@ class ForecastSolar:
 
         if response.status == 429:
             data = await response.json()
-            raise ForecastSolarRatelimit(data["message"])
+            raise ForecastSolarRatelimitError(data["message"])
 
         if rate_limit and response.status < 500:
             self.ratelimit = Ratelimit.from_response(response)

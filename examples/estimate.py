@@ -3,7 +3,7 @@ import dataclasses
 from datetime import datetime, timezone, timedelta
 from pprint import pprint
 
-from forecast_solar import ForecastSolar, ForecastSolarRatelimit
+from forecast_solar import ForecastSolar, ForecastSolarRatelimitError
 
 
 async def main():
@@ -19,7 +19,7 @@ async def main():
     ) as forecast:
         try:
             estimate = await forecast.estimate()
-        except ForecastSolarRatelimit as err:
+        except ForecastSolarRatelimitError as err:
             print("Ratelimit reached")
             print(f"Rate limit resets at {err.reset_at}")
             reset_period = err.reset_at - datetime.now(timezone.utc)
