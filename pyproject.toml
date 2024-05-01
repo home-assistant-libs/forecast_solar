@@ -66,8 +66,10 @@ lint.ignore = [
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
+  "EM101",   # Allow exceptions with string literials
   "PLR2004", # Just annoying, not really useful
   "SLOT000", # Has a bug with enums: https://github.com/astral-sh/ruff/issues/5748
+  "TRY003",  # Allow long message outside exception class
 
   # Conflicts with the Ruff formatter
   "COM812",
