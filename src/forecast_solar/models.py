@@ -144,10 +144,7 @@ class Estimate:
             (watt for date, watt in self.watts.items() if date.date() == specific_date),
             default=None,
         )
-        for (
-            timestamp,
-            watt,
-        ) in self.watts.items():
+        for timestamp, watt in self.watts.items():
             if watt == value:
                 return timestamp
         return None
