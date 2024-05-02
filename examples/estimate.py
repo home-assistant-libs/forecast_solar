@@ -34,7 +34,7 @@ async def main() -> None:
         print()
         print(f"energy_production_today: {estimate.energy_production_today}")
         print(
-            f"energy_production_today_remaining: "
+            "energy_production_today_remaining: "
             f"{estimate.energy_production_today_remaining}"
         )
         print(
@@ -42,25 +42,25 @@ async def main() -> None:
         )
         print(f"energy_production_tomorrow: {estimate.energy_production_tomorrow}")
         print(
-            f"power_highest_peak_time_tomorrow: "
+            "power_highest_peak_time_tomorrow: "
             f"{estimate.power_highest_peak_time_tomorrow}"
         )
         print()
         print(f"power_production_now: {estimate.power_production_now}")
         print(
-            f"power_production in 1 hour: "
+            "power_production in 1 hour: "
             f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=1))}"
         )
         print(
-            f"power_production in 6 hours: "
+            "power_production in 6 hours: "
             f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=6))}"
         )
         print(
-            f"power_production in 12 hours: "
+            "power_production in 12 hours: "
             f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=12))}"
         )
         print(
-            f"power_production in 24 hours: "
+            "power_production in 24 hours: "
             f"{estimate.power_production_at_time(estimate.now() + timedelta(hours=24))}"
         )
         print()
