@@ -6,7 +6,7 @@ from .exceptions import (
     ForecastSolarConfigError,
     ForecastSolarAuthenticationError,
     ForecastSolarRequestError,
-    ForecastSolarRatelimit,
+    ForecastSolarRatelimitError,
 )
 from .models import Estimate, AccountType, Ratelimit
 from .forecast_solar import ForecastSolar
@@ -19,7 +19,7 @@ __all__ = [
     "ForecastSolarConfigError",
     "ForecastSolarConnectionError",
     "ForecastSolarError",
-    "ForecastSolarRatelimit",
+    "ForecastSolarRatelimitError",
     "ForecastSolarRequestError",
     "Ratelimit",
 ]

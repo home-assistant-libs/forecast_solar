@@ -5,7 +5,7 @@ from aresponses import ResponsesMockServer
 
 from forecast_solar import (
     ForecastSolar,
-    ForecastSolarRatelimit,
+    ForecastSolarRatelimitError,
     ForecastSolarConfigError,
     ForecastSolarAuthenticationError,
     ForecastSolarRequestError,
@@ -103,7 +103,7 @@ async def test_status_429(
             text=load_fixtures("ratelimit.json"),
         ),
     )
-    with pytest.raises(ForecastSolarRatelimit):
+    with pytest.raises(ForecastSolarRatelimitError):
         assert await forecast_client._request("test")
 
 

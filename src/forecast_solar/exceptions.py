@@ -45,7 +45,7 @@ class ForecastSolarRequestError(ForecastSolarError):
         self.code = data["code"]
 
 
-class ForecastSolarRatelimit(ForecastSolarRequestError):
+class ForecastSolarRatelimitError(ForecastSolarRequestError):
     """Forecast.Solar maximum number of requests reached exception."""
 
     def __init__(self, data: dict) -> None:
