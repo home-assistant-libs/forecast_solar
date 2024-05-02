@@ -5,12 +5,10 @@ from aresponses import ResponsesMockServer
 
 from forecast_solar import (
     ForecastSolar,
-    ForecastSolarRatelimitError,
-    ForecastSolarConfigError,
     ForecastSolarAuthenticationError,
     ForecastSolarConfigError,
     ForecastSolarConnectionError,
-    ForecastSolarRatelimit,
+    ForecastSolarRatelimitError,
     ForecastSolarRequestError,
 )
 

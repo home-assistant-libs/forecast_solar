@@ -5,9 +5,8 @@ from .exceptions import (
     ForecastSolarConfigError,
     ForecastSolarConnectionError,
     ForecastSolarError,
-    ForecastSolarRatelimit,
-    ForecastSolarRequestError,
     ForecastSolarRatelimitError,
+    ForecastSolarRequestError,
 )
 from .forecast_solar import ForecastSolar
 from .models import AccountType, Estimate, Ratelimit
