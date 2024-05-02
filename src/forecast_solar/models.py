@@ -147,7 +147,7 @@ class Estimate:
         for timestamp, watt in self.watts.items():
             if watt == value:
                 return timestamp
-        return None
+        raise RuntimeError("No peak production time found")
 
     def power_production_at_time(self, time: datetime) -> int:
         """Return estimated power production at a specific time."""
