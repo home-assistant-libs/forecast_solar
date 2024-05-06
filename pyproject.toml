@@ -43,6 +43,7 @@ pytest-cov = "5.0.0"
 pytest-freezer = "0.4.8"
 ruff = "0.4.2"
 syrupy = "4.6.1"
+yamllint = "1.35.1"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
