@@ -1,6 +1,7 @@
 ---
 name: Additional Tags
 
+# yamllint disable-line rule:truthy
 on:
   push:
     tags:
