@@ -49,7 +49,7 @@ class ForecastSolar:
         rate_limit: bool = True,
         authenticate: bool = True,
         params: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+    ) -> Any:
         """Handle a request to the Forecast.Solar API.
 
         A generic method for sending/handling HTTP requests done against
@@ -195,8 +195,8 @@ class ForecastSolar:
         if self.horizon is not None:
             params["horizon"] = str(self.horizon)
         if self.damping_morning is not None and self.damping_evening is not None:
-            params["damping_morning"] = self.damping_morning
-            params["damping_evening"] = self.damping_evening
+            params["damping_morning"] = str(self.damping_morning)
+            params["damping_evening"] = str(self.damping_evening)
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
