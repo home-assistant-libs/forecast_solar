@@ -1,6 +1,7 @@
 """Exceptions for Forecast.Solar."""
 
 from datetime import datetime
+from typing import Any
 
 
 class ForecastSolarError(Exception):
@@ -14,7 +15,7 @@ class ForecastSolarConnectionError(ForecastSolarError):
 class ForecastSolarConfigError(ForecastSolarError):
     """Forecast.Solar API configuration exception."""
 
-    def __init__(self, data: str) -> None:
+    def __init__(self, data: dict[str, str]) -> None:
         """Init a solar config error."""
         super().__init__(f'{data["text"]} (error 422)')
 
@@ -22,7 +23,7 @@ class ForecastSolarConfigError(ForecastSolarError):
 class ForecastSolarAuthenticationError(ForecastSolarError):
     """Forecast.Solar API authentication exception."""
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[str, str]) -> None:
         """Init a solar auth error.
 
         https://doc.forecast.solar/doku.php?id=api#invalid_request
@@ -36,7 +37,7 @@ class ForecastSolarAuthenticationError(ForecastSolarError):
 class ForecastSolarRequestError(ForecastSolarError):
     """Forecast.Solar wrong request input variables."""
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[str, str]) -> None:
         """Init a solar request error.
 
         https://doc.forecast.solar/doku.php?id=api#invalid_request
@@ -48,7 +49,7 @@ class ForecastSolarRequestError(ForecastSolarError):
 class ForecastSolarRatelimitError(ForecastSolarRequestError):
     """Forecast.Solar maximum number of requests reached exception."""
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[str, Any]) -> None:
         """Init a rate limit error."""
         super().__init__(data)
 
