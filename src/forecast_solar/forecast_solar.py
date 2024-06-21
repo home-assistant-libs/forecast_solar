@@ -202,11 +202,14 @@ class ForecastSolar:
         if self.damping_morning is not None and self.damping_evening is not None:
             params["damping_morning"] = str(self.damping_morning)
             params["damping_evening"] = str(self.damping_evening)
-
-        url = f"estimate/{self.latitude}/{self.longitude}/{self.declination}/{self.azimuth}/{self.kwp}"
         if self.api_key is not None:
-            url += f"?actual={actual}"
-        data = await self._request(url, params=params)
+            params["actual"] = actual
+
+        data = await self._request(
+            f"estimate/{self.latitude}/{self.longitude}"
+            f"/{self.declination}/{self.azimuth}/{self.kwp}",
+            params=params,
+        )
 
         return Estimate.from_dict(data)
 
