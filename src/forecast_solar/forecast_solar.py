@@ -189,7 +189,7 @@ class ForecastSolar:
             actual: The production for the day in kWh so far. Used to improve
                 the estimation for the current day if an apikey is provided.
 
-        Returns
+        Returns:
         -------
             A Estimate object, with a estimated production forecast.
 
@@ -203,7 +203,7 @@ class ForecastSolar:
             params["damping_morning"] = str(self.damping_morning)
             params["damping_evening"] = str(self.damping_evening)
         if self.api_key is not None:
-            params["actual"] = actual
+            params["actual"] = str(actual)
 
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
