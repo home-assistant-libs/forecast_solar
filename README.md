@@ -131,10 +131,32 @@ poetry shell
 exit
 ```
 
+Setup the pre-commit check, you must run this inside the virtual environment:
+
+```bash
+pre-commit install
+```
+
+*Now you're all set to get started!*
+
+As this repository uses the [pre-commit][pre-commit] framework, all changes
+are linted and tested with each commit. You can run all checks and tests
+manually, using the following command:
+
+```bash
+poetry run pre-commit run --all-files
+```
+
 To run just the Python tests:
 
 ```bash
 poetry run pytest
+```
+
+To update the [syrupy](https://github.com/tophat/syrupy) snapshot tests:
+
+```bash
+poetry run pytest --snapshot-update
 ```
 
 ## License
@@ -182,3 +204,4 @@ SOFTWARE.
 
 [poetry-install]: https://python-poetry.org/docs/#installation
 [poetry]: https://python-poetry.org
+[pre-commit]: https://pre-commit.com
