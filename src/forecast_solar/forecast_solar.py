@@ -187,7 +187,7 @@ class ForecastSolar:
         Args:
         ----
             actual: The production for the day in kWh so far. Used to improve
-                the estimation for the current day if an apikey is provided.
+                the estimation for the current day if an API key is provided.
 
         Returns:
         -------
