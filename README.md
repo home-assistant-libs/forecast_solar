@@ -81,13 +81,15 @@ async def main() -> None:
         damping_evening=0.5,
         horizon="0,0,0,10,10,20,20,30,30",
     ) as forecast:
-        estimate = await forecast.estimate()
+        estimate = await forecast.estimate(actual=152.25)
         print(estimate)
 
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+## ForecastSolar object
 
 | Parameter | value type | Description |
 | --------- | ---------- | ----------- |
@@ -100,6 +102,13 @@ if __name__ == "__main__":
 | `damping_evening` | `float` | The damping of the solar panels in the evening (optional) |
 | `inverter` | `float` | The maximum power of your inverter in kilo watts (optional) |
 | `horizon` | `str` | A list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional) |
+
+## estimate() method
+
+| Parameter         | value type | Description                                                                                             |
+|-------------------|------------|---------------------------------------------------------------------------------------------------------|
+| `actual`          | `float`      | The production in kWh for the current day so far. Only used when an API key is provided (optional) |
+
 
 ## Contributing
 
