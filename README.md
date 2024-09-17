@@ -81,7 +81,7 @@ async def main() -> None:
         damping_evening=0.5,
         horizon="0,0,0,10,10,20,20,30,30",
     ) as forecast:
-        estimate = await forecast.estimate(actual=152.25)
+        estimate = await forecast.estimate(actual=2.315)
         print(estimate)
 
 

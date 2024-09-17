@@ -124,7 +124,7 @@ async def test_estimated_forecast_with_subscription_and_actual_value(
             text=load_fixtures("forecast_personal.json"),
         ),
     )
-    forecast: Estimate = await forecast_key_client.estimate(actual=5800)
+    forecast: Estimate = await forecast_key_client.estimate(actual=2.300)
     assert forecast == snapshot
     assert forecast.timezone == "Europe/Amsterdam"
     assert forecast.account_type == AccountType.PERSONAL
