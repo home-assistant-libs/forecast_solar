@@ -103,6 +103,41 @@ async def test_estimated_forecast_with_subscription(
     assert forecast.sum_energy_production(24) == 5784
 
 
+@pytest.mark.freeze_time("2024-04-27T07:00:00+02:00")
+async def test_estimated_forecast_with_subscription_and_actual_value(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    forecast_key_client: ForecastSolar,
+) -> None:
+    """Test estimated forecast."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/myapikey/estimate/52.16/4.47/20/10/2.16",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "60",
+                "X-Ratelimit-Period": "3600",
+            },
+            text=load_fixtures("forecast_personal.json"),
+        ),
+    )
+    forecast: Estimate = await forecast_key_client.estimate(actual=5800)
+    assert forecast == snapshot
+    assert forecast.timezone == "Europe/Amsterdam"
+    assert forecast.account_type == AccountType.PERSONAL
+
+    assert forecast.energy_production_today == 5788
+    assert forecast.energy_production_tomorrow == 7507
+
+    assert forecast.sum_energy_production(1) == 216
+    assert forecast.sum_energy_production(6) == 2802
+    assert forecast.sum_energy_production(12) == 5582
+    assert forecast.sum_energy_production(24) == 5784
+
+
 async def test_api_key_validation(
     aresponses: ResponsesMockServer,
     forecast_key_client: ForecastSolar,
