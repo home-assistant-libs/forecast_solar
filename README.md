@@ -109,7 +109,6 @@ if __name__ == "__main__":
 | --------- | ---------- | -------------------------------------------------------------------------------------------------- |
 | `actual`  | `float`    | The production in kWh for the current day so far. Only used when an API key is provided (optional) |
 
-
 ## Contributing
 
 Would you like to contribute to the development of this project? Then read the prepared [contribution guidelines](CONTRIBUTING.md) and go ahead!
