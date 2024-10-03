@@ -105,9 +105,9 @@ if __name__ == "__main__":
 
 ## estimate() method
 
-| Parameter         | value type | Description                                                                                             |
-|-------------------|------------|---------------------------------------------------------------------------------------------------------|
-| `actual`          | `float`      | The production in kWh for the current day so far. Only used when an API key is provided (optional) |
+| Parameter | value type | Description                                                                                        |
+| --------- | ---------- | -------------------------------------------------------------------------------------------------- |
+| `actual`  | `float`    | The production in kWh for the current day so far. Only used when an API key is provided (optional) |
 
 
 ## Contributing
