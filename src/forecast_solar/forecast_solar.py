@@ -181,10 +181,15 @@ class ForecastSolar:
 
         return True
 
-    async def estimate(self) -> Estimate:
+    async def estimate(self, actual: float = 0) -> Estimate:
         """Get solar production estimations from the Forecast.Solar API.
 
-        Returns
+        Args:
+        ----
+            actual: The production for the day in kWh so far. Used to improve
+                the estimation for the current day if an API key is provided.
+
+        Returns:
         -------
             A Estimate object, with a estimated production forecast.
 
@@ -197,6 +202,9 @@ class ForecastSolar:
         if self.damping_morning is not None and self.damping_evening is not None:
             params["damping_morning"] = str(self.damping_morning)
             params["damping_evening"] = str(self.damping_evening)
+        if self.api_key is not None:
+            params["actual"] = str(actual)
+
         data = await self._request(
             f"estimate/{self.latitude}/{self.longitude}"
             f"/{self.declination}/{self.azimuth}/{self.kwp}",
