@@ -41,7 +41,6 @@ async def client_api_key() -> AsyncGenerator[ForecastSolar, None]:
             kwp=2.160,
             damping_morning=0,
             damping_evening=0,
-            horizon="0,0,0,10,10,20,20,30,30",
             inverter=1.300,
             session=session,
         ) as forecast_key_client,
