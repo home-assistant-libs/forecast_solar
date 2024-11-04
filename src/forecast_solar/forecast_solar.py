@@ -194,7 +194,7 @@ class ForecastSolar:
             A Estimate object, with a estimated production forecast.
 
         """
-        params = {"time": "iso8601", "damping": str(self.damping)}
+        params = {"time": "utc", "damping": str(self.damping)}
         if self.inverter is not None:
             params["inverter"] = str(self.inverter)
         if self.horizon is not None:
