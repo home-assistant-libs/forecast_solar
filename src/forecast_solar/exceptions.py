@@ -17,7 +17,7 @@ class ForecastSolarConfigError(ForecastSolarError):
 
     def __init__(self, data: dict[str, str]) -> None:
         """Init a solar config error."""
-        super().__init__(f'{data["text"]} (error 422)')
+        super().__init__(f"{data['text']} (error 422)")
 
 
 class ForecastSolarAuthenticationError(ForecastSolarError):
@@ -30,7 +30,7 @@ class ForecastSolarAuthenticationError(ForecastSolarError):
         """
         # seems that code is missing in response in some endpoints (i.e /info)
         code = data.get("code")
-        super().__init__(f'{data["text"]} (error {code})')
+        super().__init__(f"{data['text']} (error {code})")
         self.code = code
 
 
@@ -42,7 +42,7 @@ class ForecastSolarRequestError(ForecastSolarError):
 
         https://doc.forecast.solar/doku.php?id=api#invalid_request
         """
-        super().__init__(f'{data["text"]} (error {data["code"]})')
+        super().__init__(f"{data['text']} (error {data['code']})")
         self.code = data["code"]
 
 

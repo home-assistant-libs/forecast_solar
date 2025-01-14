@@ -99,8 +99,6 @@ asyncio_mode = "auto"
 target-version = "py311"
 lint.select = ["ALL"]
 lint.ignore = [
-  "ANN101",  # Self... explanatory
-  "ANN102",  # cls... just as useless
   "ANN401",  # Opinioated warning on disallowing dynamically typed expressions
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
@@ -112,7 +110,6 @@ lint.ignore = [
 
   # Conflicts with the Ruff formatter
   "COM812",
-  "ISC001",
 ]
 
 [tool.ruff.lint.flake8-pytest-style]
