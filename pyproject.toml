@@ -1,14 +1,12 @@
-[tool.poetry]
+[project]
 name = "forecast-solar"
 version = "0.0.0"
 description = "Asynchronous Python client for getting forecast solar information"
-authors = ["Klaas Schoute <hello@student-techlife.com>"]
-maintainers = ["Klaas Schoute <hello@student-techlife.com>"]
+authors = [{ name="Klaas Schoute", email="<hello@student-techlife.com>"}]
+maintainers = [{name="Klaas Schoute", email="<hello@student-techlife.com>"}]
 license = "MIT"
+requires-python = ">=3.11"
 readme = "README.md"
-homepage = "https://github.com/home-assistant-libs/forecast_solar"
-repository = "https://github.com/home-assistant-libs/forecast_solar"
-documentation = "https://github.com/home-assistant-libs/forecast_solar"
 keywords = ["forecast", "solar", "power", "energy", "api", "async", "client"]
 classifiers = [
     "Framework :: AsyncIO",
@@ -21,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dynamic = ["dependencies"]
 packages = [
     { include = "forecast_solar", from = "src" },
 ]
@@ -31,7 +30,10 @@ aiodns = ">=3.0.0"
 python = "^3.11"
 yarl = ">=1.6.0"
 
-[tool.poetry.urls]
+[project.urls]
+homepage = "https://github.com/home-assistant-libs/forecast_solar"
+repository = "https://github.com/home-assistant-libs/forecast_solar"
+documentation = "https://github.com/home-assistant-libs/forecast_solar"
 "Bug Tracker" = "https://github.com/home-assistant-libs/forecast_solar/issues"
 Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
 
