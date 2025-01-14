@@ -169,7 +169,7 @@ poetry run pytest --snapshot-update
 
 MIT License
 
-Copyright (c) 2021-2024 Klaas Schoute
+Copyright (c) 2021-2025 Klaas Schoute
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -194,7 +194,7 @@ SOFTWARE.
 [forecast-damping]: https://doc.forecast.solar/doku.php?id=damping
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg?style=for-the-badge
 [contributors-shield]: https://img.shields.io/github/contributors/home-assistant-libs/forecast_solar.svg?style=for-the-badge
 [contributors-url]: https://github.com/home-assistant-libs/forecast_solar/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/home-assistant-libs/forecast_solar.svg?style=for-the-badge
