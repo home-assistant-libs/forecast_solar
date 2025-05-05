@@ -47,7 +47,7 @@ pytest = "8.3.5"
 pytest-asyncio = "0.26.0"
 pytest-cov = "6.1.1"
 pytest-freezer = "0.4.9"
-ruff = "0.11.7"
+ruff = "0.11.8"
 syrupy = "4.9.1"
 yamllint = "1.35.1"
 
