@@ -80,9 +80,6 @@ class ForecastSolar:
                 the rate limit of the Forecast.Solar API.
 
         """
-        # Forecast.Solar is currently experiencing IPv6 issues.
-        # However, their DNS does return an non-working IPv6 address.
-        # This ensures we use the IPv4 address.
         # This is no longer an issue because aiohttp supports
         # happyeyeballs by default.
         # https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector
