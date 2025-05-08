@@ -90,5 +90,3 @@ async def test_content_type(
     )
     with pytest.raises(ForecastSolarError):
         assert await forecast_client._request("test")
-
-
