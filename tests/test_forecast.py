@@ -6,8 +6,6 @@ from typing import Any
 from unittest.mock import patch
 
 import pytest
-from aiodns import DNSResolver
-from aiodns.error import DNSError
 from aiohttp import ClientSession
 from aresponses import ResponsesMockServer
 
