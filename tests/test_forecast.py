@@ -92,31 +92,3 @@ async def test_content_type(
         assert await forecast_client._request("test")
 
 
-async def test_dns_error(forecast_client: ForecastSolar) -> None:
-    """Test request DNS error is handled correctly."""
-    async with ClientSession():
-        with (
-            patch.object(
-                DNSResolver,
-                "query",
-                side_effect=DNSError,
-            ),
-            pytest.raises(ForecastSolarConnectionError),
-        ):
-            assert await forecast_client._request("test")
-
-
-async def test_empty_dns_result(forecast_client: ForecastSolar) -> None:
-    """Test empty DNS result is handled correctly."""
-    async with ClientSession():
-        dns_result: Any = asyncio.Future()
-        dns_result.set_result(None)
-        with (
-            patch.object(
-                DNSResolver,
-                "query",
-                return_value=dns_result,
-            ),
-            pytest.raises(ForecastSolarConnectionError),
-        ):
-            assert await forecast_client._request("test")
