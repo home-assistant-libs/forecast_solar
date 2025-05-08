@@ -5,8 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Self
 
-from aiodns import DNSResolver
-from aiodns.error import DNSError
 from aiohttp import ClientSession
 from yarl import URL
 
@@ -41,6 +39,7 @@ class ForecastSolar:
     ratelimit: Ratelimit | None = None
     inverter: float | None = None
     _close_session: bool = False
+    _base_url = URL("https://api.forecast.solar")
 
     async def _request(
         self,
@@ -84,25 +83,14 @@ class ForecastSolar:
         # Forecast.Solar is currently experiencing IPv6 issues.
         # However, their DNS does return an non-working IPv6 address.
         # This ensures we use the IPv4 address.
-        dns = DNSResolver()
-        try:
-            result = await dns.query("api.forecast.solar", "A")
-        except DNSError as err:
-            raise ForecastSolarConnectionError(
-                "Error while resolving Forecast.Solar API address"
-            ) from err
-
-        if not result:
-            raise ForecastSolarConnectionError(
-                "Could not resolve Forecast.Solar API address"
-            )
-
-        # Connect as normal
-        url = URL.build(scheme="https", host=result[0].host)
-
+        # This is no longer an issue because aiohttp supports
+        # happyeyeballs by default.
+        # https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector
         # Add API key if one is provided
         if authenticate and self.api_key is not None:
-            url = url.with_path(f"{self.api_key}/")
+            url = self._base_url.with_path(f"{self.api_key}/")
+        else:
+            url = self._base_url
 
         url = url.join(URL(uri))
 
@@ -114,7 +102,6 @@ class ForecastSolar:
             "GET",
             url,
             params=params,
-            headers={"Host": "api.forecast.solar"},
             ssl=False,
         )
 

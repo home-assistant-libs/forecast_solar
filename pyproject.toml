@@ -26,7 +26,6 @@ packages = [
 
 [tool.poetry.dependencies]
 aiohttp = ">=3.0.0"
-aiodns = ">=3.0.0"
 python = "^3.11"
 yarl = ">=1.6.0"
 
