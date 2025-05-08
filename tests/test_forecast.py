@@ -1,17 +1,12 @@
 """Tests for Forecast.Solar."""
 
 # pylint: disable=protected-access
-import asyncio
-from typing import Any
-from unittest.mock import patch
 
 import pytest
-from aiohttp import ClientSession
 from aresponses import ResponsesMockServer
 
 from forecast_solar import (
     ForecastSolar,
-    ForecastSolarConnectionError,
     ForecastSolarError,
 )
 
