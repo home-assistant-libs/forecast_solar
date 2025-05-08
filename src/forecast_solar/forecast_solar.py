@@ -80,9 +80,6 @@ class ForecastSolar:
                 the rate limit of the Forecast.Solar API.
 
         """
-        # This is no longer an issue because aiohttp supports
-        # happyeyeballs by default.
-        # https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.TCPConnector
         # Add API key if one is provided
         if authenticate and self.api_key is not None:
             url = self._base_url.with_path(f"{self.api_key}/")
