@@ -39,7 +39,7 @@ Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
 [tool.poetry.group.dev.dependencies]
 aresponses = "3.0.0"
 covdefaults = "2.3.0"
-mypy = "1.18.2"
+mypy = "1.19.0"
 pre-commit = "4.5.0"
 pre-commit-hooks = "6.0.0"
 pytest = "8.4.2"
