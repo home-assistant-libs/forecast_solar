@@ -196,6 +196,20 @@ And to run all checks and tests manually, use the following command:
 poetry run pre-commit run --all-files
 ```
 
+### Linting
+
+Before committing, it is recommended to run the linter to ensure code quality:
+
+```bash
+poetry run ruff check .
+```
+
+To automatically fix linting issues:
+
+```bash
+poetry run ruff check . --fix
+```
+
 ### Testing
 
 It uses [pytest](https://docs.pytest.org/en/stable/) as the test framework. To run the tests:
