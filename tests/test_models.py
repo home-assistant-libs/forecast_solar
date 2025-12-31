@@ -6,7 +6,7 @@ import pytest
 from aresponses import ResponsesMockServer
 from syrupy.assertion import SnapshotAssertion
 
-from forecast_solar import AccountType, Estimate, ForecastSolar
+from forecast_solar import AccountType, Estimate, ForecastSolar, Plane
 
 from . import load_fixtures
 
@@ -180,3 +180,86 @@ async def test_plane_validation(
         ),
     )
     assert await forecast_client.validate_plane() is True
+
+
+@pytest.mark.freeze_time("2024-04-26T12:00:00+02:00")
+async def test_estimated_forecast_multi_plane(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    forecast_multi_plane_client: ForecastSolar,
+) -> None:
+    """Test estimated forecast with multiple planes."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/myapikey/estimate/52.16/4.47/20/10/2.16/30/-90/1.5",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "60",
+                "X-Ratelimit-Period": "3600",
+            },
+            text=load_fixtures("forecast_personal.json"),
+        ),
+    )
+    forecast: Estimate = await forecast_multi_plane_client.estimate()
+    assert forecast == snapshot
+    assert forecast.timezone == "Europe/Amsterdam"
+    assert forecast.account_type == AccountType.PERSONAL
+
+
+async def test_multi_plane_validation(
+    aresponses: ResponsesMockServer,
+    forecast_multi_plane_client: ForecastSolar,
+) -> None:
+    """Test plane validation with multiple planes."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/check/52.16/4.47/20/10/2.16/30/-90/1.5",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("validate_plane.json"),
+        ),
+    )
+    assert await forecast_multi_plane_client.validate_plane() is True
+
+
+async def test_planes_ignored_without_api_key(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test that planes are silently ignored when no API key is provided."""
+    # When no API key is provided, planes should be ignored and only the primary plane used
+    aresponses.add(
+        "api.forecast.solar",
+        "/estimate/52.16/4.47/20/10/2.16",  # Only primary plane, no additional planes
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("forecast.json"),
+        ),
+    )
+    async with ForecastSolar(
+        latitude=52.16,
+        longitude=4.47,
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        planes=[
+            Plane(declination=30, azimuth=-90, kwp=1.5),
+        ],
+    ) as forecast:
+        estimate = await forecast.estimate()
+        assert estimate is not None
