@@ -233,10 +233,10 @@ async def test_multi_plane_validation(
 
 async def test_planes_ignored_without_api_key(
     aresponses: ResponsesMockServer,
-    snapshot: SnapshotAssertion,
 ) -> None:
     """Test that planes are silently ignored when no API key is provided."""
-    # When no API key is provided, planes should be ignored and only the primary plane used
+    # When no API key is provided, planes should be ignored
+    # and only the primary plane used
     aresponses.add(
         "api.forecast.solar",
         "/estimate/52.16/4.47/20/10/2.16",  # Only primary plane, no additional planes
