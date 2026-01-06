@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 import pytest
 from aiohttp import ClientSession
 
-from forecast_solar import ForecastSolar
+from forecast_solar import ForecastSolar, Plane
 
 
 @pytest.fixture(name="forecast_client")
@@ -46,3 +46,24 @@ async def client_api_key() -> AsyncGenerator[ForecastSolar, None]:
         ) as forecast_key_client,
     ):
         yield forecast_key_client
+
+
+@pytest.fixture(name="forecast_multi_plane_client")
+async def client_multi_plane() -> AsyncGenerator[ForecastSolar, None]:
+    """Return a Forecast.Solar client with multiple planes."""
+    async with (
+        ClientSession() as session,
+        ForecastSolar(
+            api_key="myapikey",
+            latitude=52.16,
+            longitude=4.47,
+            declination=20,
+            azimuth=10,
+            kwp=2.160,
+            planes=[
+                Plane(declination=30, azimuth=-90, kwp=1.5),
+            ],
+            session=session,
+        ) as forecast_multi_plane_client,
+    ):
+        yield forecast_multi_plane_client

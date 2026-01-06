@@ -16,7 +16,7 @@ from .exceptions import (
     ForecastSolarRatelimitError,
     ForecastSolarRequestError,
 )
-from .models import Estimate, Ratelimit
+from .models import Estimate, Plane, Ratelimit
 
 
 @dataclass
@@ -34,12 +34,29 @@ class ForecastSolar:
     damping_morning: float | None = None
     damping_evening: float | None = None
     horizon: str | None = None
+    planes: list[Plane] | None = None
 
     session: ClientSession | None = None
     ratelimit: Ratelimit | None = None
     inverter: float | None = None
     _close_session: bool = False
     _base_url = URL("https://api.forecast.solar")
+
+    def _build_plane_path(self) -> str:
+        """Build the plane path segment for API URLs.
+
+        Returns
+        -------
+            A string containing the plane parameters for all planes.
+            Additional planes are only included if an API key is provided.
+
+        """
+        path = f"{self.declination}/{self.azimuth}/{self.kwp}"
+        # Only include additional planes if an API key is provided
+        if self.planes and self.api_key is not None:
+            for plane in self.planes:
+                path += f"/{plane.declination}/{plane.azimuth}/{plane.kwp}"
+        return path
 
     async def _request(
         self,
@@ -142,8 +159,7 @@ class ForecastSolar:
 
         """
         await self._request(
-            f"check/{self.latitude}/{self.longitude}"
-            f"/{self.declination}/{self.azimuth}/{self.kwp}",
+            f"check/{self.latitude}/{self.longitude}/{self._build_plane_path()}",
             rate_limit=False,
             authenticate=False,
         )
@@ -187,8 +203,7 @@ class ForecastSolar:
             params["actual"] = str(actual)
 
         data = await self._request(
-            f"estimate/{self.latitude}/{self.longitude}"
-            f"/{self.declination}/{self.azimuth}/{self.kwp}",
+            f"estimate/{self.latitude}/{self.longitude}/{self._build_plane_path()}",
             params=params,
         )
 
