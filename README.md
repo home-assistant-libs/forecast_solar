@@ -136,19 +136,19 @@ poetry install
 _Poetry creates by default an virtual environment where it installs all
 necessary pip packages_.
 
-### Pre-commit
+### Prek
 
-This repository uses the [pre-commit][pre-commit] framework, all changes
-are linted and tested with each commit. To setup the pre-commit check, run:
+This repository uses the [prek][prek] framework, all changes
+are linted and tested with each commit. To setup the prek check, run:
 
 ```bash
-poetry run pre-commit install
+poetry run prek install
 ```
 
 And to run all checks and tests manually, use the following command:
 
 ```bash
-poetry run pre-commit run --all-files
+poetry run prek run --all-files
 ```
 
 ### Testing
@@ -210,4 +210,4 @@ SOFTWARE.
 
 [poetry-install]: https://python-poetry.org/docs/#installation
 [poetry]: https://python-poetry.org
-[pre-commit]: https://pre-commit.com
+[prek]: https://github.com/j178/prek
