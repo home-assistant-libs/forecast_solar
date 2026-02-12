@@ -135,6 +135,10 @@ class ForecastSolar:
             data = await response.json()
             raise ForecastSolarRatelimitError(data["message"])
 
+        if response.status == 404:
+            data = await response.json()
+            raise ForecastSolarRequestError(data["message"])
+
         if rate_limit and response.status == 200:
             self.ratelimit = Ratelimit.from_response(response)
 

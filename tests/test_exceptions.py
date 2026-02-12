@@ -128,3 +128,24 @@ async def test_status_502(
     )
     with pytest.raises(ForecastSolarConnectionError):
         assert await forecast_client._request("test")
+
+
+async def test_status_404(
+    aresponses: ResponsesMockServer,
+    forecast_client: ForecastSolar,
+) -> None:
+    """Test response status 404."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/test",
+        "GET",
+        aresponses.Response(
+            status=404,
+            headers={
+                "Content-Type": "application/json",
+            },
+            text='{"message": {"code": 404, "text": "Not Found"}}',
+        ),
+    )
+    with pytest.raises(ForecastSolarRequestError):
+        assert await forecast_client._request("test")
