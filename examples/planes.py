@@ -26,8 +26,6 @@ async def main() -> None:
             Plane(declination=30, azimuth=-90, kwp=1.5),  # West-facing plane
             Plane(declination=30, azimuth=90, kwp=1.5),  # East-facing plane
         ],
-        damping=0,
-        horizon="0,0,0,10,10,20,20,30,30",
     ) as forecast:
         try:
             estimate = await forecast.estimate()
