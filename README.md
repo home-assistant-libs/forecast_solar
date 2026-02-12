@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
 If you have solar panels facing different directions, you can specify multiple planes.
 
-**Note:** Multiple planes require an API key from [forecast.solar](https://forecast.solar). If no API key is provided, additional planes will be silently ignored.
+**Note:** Using multiple planes requires both an API key and a Personal Plus (or higher) subscription. If no API key is provided, additional planes will be silently ignored. See the [subscription plan overview][forecast-subscription] for more information.
 
 ```python
 import asyncio
@@ -237,6 +237,7 @@ SOFTWARE.
 <!-- LINKS -->
 [forecast-horizon]: https://doc.forecast.solar/doku.php?id=api#horizon
 [forecast-damping]: https://doc.forecast.solar/doku.php?id=damping
+[forecast-subscription]: https://doc.forecast.solar/account_models
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg?style=for-the-badge

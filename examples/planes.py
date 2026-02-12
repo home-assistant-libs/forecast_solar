@@ -11,7 +11,8 @@ async def main() -> None:
     """Get an estimate from the Forecast.Solar API using multiple planes.
 
     This example demonstrates how to configure multiple solar panel arrays
-    (planes) with different orientations. Additional planes require an API key.
+    (planes) with different orientations. Using multiple planes requires both
+    an API key and a Personal Plus or higher subscription.
     """
     async with ForecastSolar(
         api_key="your-api-key",  # API key is required for multiple planes
