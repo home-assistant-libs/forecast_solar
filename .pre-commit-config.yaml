@@ -77,6 +77,11 @@ repos:
         types: [text]
         entry: poetry run end-of-file-fixer
         stages: [commit, push, manual]
+      - id: ty
+        name: 🆎 Static type checking using ty
+        language: system
+        types: [python]
+        entry: poetry run ty check
       - id: no-commit-to-branch
         name: 🛑 Don't commit to main branch
         language: system

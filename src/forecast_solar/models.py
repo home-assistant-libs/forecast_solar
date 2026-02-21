@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 from zoneinfo import ZoneInfo
 
@@ -42,7 +42,7 @@ def _interval_value_sum(
     return total
 
 
-class AccountType(str, Enum):
+class AccountType(StrEnum):
     """Enumeration representing the Forecast.Solar account type."""
 
     PUBLIC = "public"
