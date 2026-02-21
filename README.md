@@ -89,19 +89,64 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+### Multiple Planes
+
+If you have solar panels facing different directions, you can specify multiple planes.
+
+**Note:** Using multiple planes requires both an API key and a Personal Plus (or higher) subscription. If no API key is provided, additional planes will be silently ignored. See the [subscription plan overview][forecast-subscription] for more information.
+
+```python
+import asyncio
+
+from forecast_solar import ForecastSolar, Plane
+
+
+async def main() -> None:
+    """Show example with multiple planes."""
+    async with ForecastSolar(
+        api_key="YOUR_API_KEY",
+        latitude=52.16,
+        longitude=4.47,
+        # First plane (primary)
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        # Additional planes
+        planes=[
+            Plane(declination=30, azimuth=-90, kwp=1.5),  # Second plane
+            Plane(declination=25, azimuth=90, kwp=1.0),   # Third plane
+        ],
+    ) as forecast:
+        estimate = await forecast.estimate()
+        print(estimate)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 ## ForecastSolar object
+
+| Parameter | value type | Description                                                                                                 |
+| --------- | ---------- |-------------------------------------------------------------------------------------------------------------|
+| `api_key` | `str` | Your API key from [forecast.solar](https://forecast.solar) (optional)                                       |
+| `declination` | `int` | The tilt of the solar panels (required)                                                                     |
+| `azimuth` | `int` | The direction the solar panels are facing (required)                                                        |
+| `kwp` | `float` | The size of the solar panels in kWp (required)                                                              |
+| `damping` | `float` | The damping of the solar panels, [read this][forecast-damping] for more information (optional)              |
+| `damping_morning` | `float` | The damping of the solar panels in the morning (optional)                                                   |
+| `damping_evening` | `float` | The damping of the solar panels in the evening (optional)                                                   |
+| `inverter` | `float` | The maximum power of your inverter in kilo watts (optional)                                                 |
+| `horizon` | `str` | A list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional) |
+| `planes` | `list[Plane]` | A list of additional Plane objects for multi-plane setups. Only used when an API key is provided (optional)                                                  |
+
+## Plane object
 
 | Parameter | value type | Description |
 | --------- | ---------- | ----------- |
-| `api_key` | `str` | Your API key from [forecast.solar](https://forecast.solar) (optional) |
-| `declination` | `int` | The tilt of the solar panels (required) |
-| `azimuth` | `int` | The direction the solar panels are facing (required) |
+| `declination` | `float` | The tilt of the solar panels (required) |
+| `azimuth` | `float` | The direction the solar panels are facing (required) |
 | `kwp` | `float` | The size of the solar panels in kWp (required) |
-| `damping` | `float` | The damping of the solar panels, [read this][forecast-damping] for more information (optional) |
-| `damping_morning` | `float` | The damping of the solar panels in the morning (optional) |
-| `damping_evening` | `float` | The damping of the solar panels in the evening (optional) |
-| `inverter` | `float` | The maximum power of your inverter in kilo watts (optional) |
-| `horizon` | `str` | A list of **comma separated** degrees values, [read this][forecast-horizon] for more information (optional) |
 
 ## estimate() method
 
@@ -192,6 +237,7 @@ SOFTWARE.
 <!-- LINKS -->
 [forecast-horizon]: https://doc.forecast.solar/doku.php?id=api#horizon
 [forecast-damping]: https://doc.forecast.solar/doku.php?id=damping
+[forecast-subscription]: https://doc.forecast.solar/account_models
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg?style=for-the-badge

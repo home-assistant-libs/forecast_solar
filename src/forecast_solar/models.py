@@ -51,6 +51,23 @@ class AccountType(StrEnum):
 
 
 @dataclass
+class Plane:
+    """Represents a solar plane configuration.
+
+    Attributes
+    ----------
+        declination: The tilt of the solar panels (0-90 degrees).
+        azimuth: The direction the solar panels are facing (-180 to 180 degrees).
+        kwp: The size of the solar panels in kWp.
+
+    """
+
+    declination: float
+    azimuth: float
+    kwp: float
+
+
+@dataclass
 class Estimate:
     """Object holding estimate forecast results from Forecast.Solar.
 
