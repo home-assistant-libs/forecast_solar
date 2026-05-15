@@ -125,14 +125,20 @@ class Estimate:
         return self.power_production_at_time(self.now())
 
     @property
-    def power_highest_peak_time_today(self) -> datetime:
+    def power_highest_peak_time_today(self) -> datetime | None:
         """Return datetime with highest power production moment today."""
-        return self.peak_production_time(self.now().date())
+        try:
+            return self.peak_production_time(self.now().date())
+        except RuntimeError:
+            return None
 
     @property
-    def power_highest_peak_time_tomorrow(self) -> datetime:
+    def power_highest_peak_time_tomorrow(self) -> datetime | None:
         """Return datetime with highest power production moment tomorrow."""
-        return self.peak_production_time(self.now().date() + timedelta(days=1))
+        try:
+            return self.peak_production_time(self.now().date() + timedelta(days=1))
+        except RuntimeError:
+            return None
 
     @property
     def energy_current_hour(self) -> int:
@@ -161,6 +167,8 @@ class Estimate:
             (watt for date, watt in self.watts.items() if date.date() == specific_date),
             default=None,
         )
+        if value is None:
+            raise RuntimeError("No peak production time found")
         for timestamp, watt in self.watts.items():
             if watt == value:
                 return timestamp
