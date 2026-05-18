@@ -263,3 +263,37 @@ async def test_planes_ignored_without_api_key(
     ) as forecast:
         estimate = await forecast.estimate()
         assert estimate is not None
+
+
+def test_peak_production_time_with_empty_data() -> None:
+    """Test that peak production time properties return None when no data is available."""
+    # Create an Estimate with empty data to simulate when no production data is available
+    estimate = Estimate(
+        watts={},  # Empty watts data
+        wh_period={},
+        wh_days={},
+        api_rate_limit=60,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    # Test that properties return None instead of raising RuntimeError
+    assert estimate.power_highest_peak_time_today is None
+    assert estimate.power_highest_peak_time_tomorrow is None
+
+
+def test_peak_production_time_method_with_empty_data() -> None:
+    """Test that peak_production_time method raises RuntimeError when no data is available."""
+    from datetime import date
+
+    # Create an Estimate with empty data
+    estimate = Estimate(
+        watts={},  # Empty watts data
+        wh_period={},
+        wh_days={},
+        api_rate_limit=60,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    # Test that the underlying method still raises RuntimeError
+    with pytest.raises(RuntimeError, match="No peak production time found"):
+        estimate.peak_production_time(date(2024, 4, 26))
