@@ -125,12 +125,12 @@ class Estimate:
         return self.power_production_at_time(self.now())
 
     @property
-    def power_highest_peak_time_today(self) -> datetime:
+    def power_highest_peak_time_today(self) -> datetime | None:
         """Return datetime with highest power production moment today."""
         return self.peak_production_time(self.now().date())
 
     @property
-    def power_highest_peak_time_tomorrow(self) -> datetime:
+    def power_highest_peak_time_tomorrow(self) -> datetime | None:
         """Return datetime with highest power production moment tomorrow."""
         return self.peak_production_time(self.now().date() + timedelta(days=1))
 
@@ -155,16 +155,18 @@ class Estimate:
         """Return the current timestamp in the API timezone."""
         return datetime.now(tz=ZoneInfo(self.api_timezone))
 
-    def peak_production_time(self, specific_date: date) -> datetime:
+    def peak_production_time(self, specific_date: date) -> datetime | None:
         """Return the peak time on a specific date."""
-        value = max(
-            (watt for date, watt in self.watts.items() if date.date() == specific_date),
+        peak = max(
+            (
+                (timestamp, watt)
+                for timestamp, watt in self.watts.items()
+                if timestamp.date() == specific_date
+            ),
+            key=lambda item: item[1],
             default=None,
         )
-        for timestamp, watt in self.watts.items():
-            if watt == value:
-                return timestamp
-        raise RuntimeError("No peak production time found")
+        return peak[0] if peak is not None else None
 
     def power_production_at_time(self, time: datetime) -> int:
         """Return estimated power production at a specific time."""

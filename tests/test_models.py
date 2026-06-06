@@ -1,6 +1,6 @@
 """Test the models."""
 
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 from aresponses import ResponsesMockServer
@@ -263,3 +263,41 @@ async def test_planes_ignored_without_api_key(
     ) as forecast:
         estimate = await forecast.estimate()
         assert estimate is not None
+
+
+@pytest.mark.freeze_time("2024-04-26T12:00:00+02:00")
+def test_peak_time_properties_return_none_without_date_data() -> None:
+    """Test peak time properties return None when no peak is available."""
+    forecast = Estimate(
+        watts={
+            datetime.fromisoformat("2024-04-27T12:00:00+02:00"): 42,
+        },
+        wh_period={},
+        wh_days={},
+        api_rate_limit=10,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    assert forecast.power_highest_peak_time_today is None
+    assert forecast.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2024-04-27T12:00:00+02:00"
+    )
+    assert forecast.peak_production_time(date(2024, 4, 26)) is None
+
+
+def test_peak_production_time_filters_peak_by_date() -> None:
+    """Test peak time only returns a timestamp for the requested date."""
+    forecast = Estimate(
+        watts={
+            datetime.fromisoformat("2024-04-25T23:00:00+02:00"): 0,
+            datetime.fromisoformat("2024-04-26T00:00:00+02:00"): 0,
+        },
+        wh_period={},
+        wh_days={},
+        api_rate_limit=10,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    assert forecast.peak_production_time(date(2024, 4, 26)) == datetime.fromisoformat(
+        "2024-04-26T00:00:00+02:00"
+    )
