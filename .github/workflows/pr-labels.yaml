@@ -23,7 +23,7 @@ jobs:
       pull-requests: read
     steps:
       - name: 🏷 Verify PR has a valid label
-        uses: klaasnicolaas/action-pr-labels@4b8aaf02640f39706f5a096ea72572bec217c17a # v3.1.0
+        uses: klaasnicolaas/action-pr-labels@v3.1.1
         with:
           valid-labels: >-
             breaking-change, bugfix, documentation, enhancement,
