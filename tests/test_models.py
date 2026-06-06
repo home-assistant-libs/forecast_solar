@@ -265,35 +265,39 @@ async def test_planes_ignored_without_api_key(
         assert estimate is not None
 
 
-def test_peak_production_time_with_empty_data() -> None:
-    """Test that peak production time properties return None when no data is available."""
-    # Create an Estimate with empty data to simulate when no production data is available
-    estimate = Estimate(
-        watts={},  # Empty watts data
+@pytest.mark.freeze_time("2024-04-26T12:00:00+02:00")
+def test_peak_time_properties_return_none_without_date_data() -> None:
+    """Test peak time properties return None when no peak is available."""
+    forecast = Estimate(
+        watts={
+            datetime.fromisoformat("2024-04-27T12:00:00+02:00"): 42,
+        },
         wh_period={},
         wh_days={},
-        api_rate_limit=60,
+        api_rate_limit=10,
         api_timezone="Europe/Amsterdam",
     )
 
-    # Test that properties return None instead of raising RuntimeError
-    assert estimate.power_highest_peak_time_today is None
-    assert estimate.power_highest_peak_time_tomorrow is None
+    assert forecast.power_highest_peak_time_today is None
+    assert forecast.power_highest_peak_time_tomorrow == datetime.fromisoformat(
+        "2024-04-27T12:00:00+02:00"
+    )
+    assert forecast.peak_production_time(date(2024, 4, 26)) is None
 
 
-def test_peak_production_time_method_with_empty_data() -> None:
-    """Test that peak_production_time method raises RuntimeError when no data is available."""
-    from datetime import date
-
-    # Create an Estimate with empty data
-    estimate = Estimate(
-        watts={},  # Empty watts data
+def test_peak_production_time_filters_peak_by_date() -> None:
+    """Test peak time only returns a timestamp for the requested date."""
+    forecast = Estimate(
+        watts={
+            datetime.fromisoformat("2024-04-25T23:00:00+02:00"): 0,
+            datetime.fromisoformat("2024-04-26T00:00:00+02:00"): 0,
+        },
         wh_period={},
         wh_days={},
-        api_rate_limit=60,
+        api_rate_limit=10,
         api_timezone="Europe/Amsterdam",
     )
 
-    # Test that the underlying method still raises RuntimeError
-    with pytest.raises(RuntimeError, match="No peak production time found"):
-        estimate.peak_production_time(date(2024, 4, 26))
+    assert forecast.peak_production_time(date(2024, 4, 26)) == datetime.fromisoformat(
+        "2024-04-26T00:00:00+02:00"
+    )
