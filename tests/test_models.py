@@ -1,6 +1,6 @@
 """Test the models."""
 
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 from aresponses import ResponsesMockServer
