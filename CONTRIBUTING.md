@@ -27,3 +27,10 @@ Even better: You could submit a pull request with a fix / new feature!
 
 [github]: https://github.com/klaasnicolaas/forecast_solar/issues
 [prs]: https://github.com/klaasnicolaas/forecast_solar/pulls
+
+## AI policy
+
+This project follows the [Open Home Foundation AI Policy](AI_POLICY.md). In
+short: AI tools are welcome as an aid, but you must fully understand and be
+able to explain every change you submit. Contributions made by autonomous
+agents are not accepted.
