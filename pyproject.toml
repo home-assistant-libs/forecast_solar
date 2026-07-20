@@ -47,7 +47,7 @@ pytest-cov = "7.1.0"
 pytest-freezer = "0.4.9"
 ruff = "0.15.21"
 syrupy = "5.5.3"
-ty = "0.0.59"
+ty = "0.0.61"
 yamllint = "1.38.0"
 
 [tool.coverage.run]
