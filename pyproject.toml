@@ -45,7 +45,7 @@ pytest = "9.1.1"
 pytest-asyncio = "1.4.0"
 pytest-cov = "7.1.0"
 pytest-freezer = "0.4.9"
-ruff = "0.15.22"
+ruff = "0.16.0"
 syrupy = "5.5.3"
 ty = "0.0.61"
 yamllint = "1.38.0"
@@ -67,6 +67,7 @@ target-version = "py312"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinionated warning on disallowing dynamically typed expressions
+  "CPY001",  # Copyright notice check disabled globally by project preference
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
