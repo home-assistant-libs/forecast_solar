@@ -67,6 +67,7 @@ target-version = "py312"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinionated warning on disallowing dynamically typed expressions
+  "CPY001",  # Duplicate code check disabled globally by project preference
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
