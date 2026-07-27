@@ -114,7 +114,7 @@ async def main() -> None:
         # Additional planes
         planes=[
             Plane(declination=30, azimuth=-90, kwp=1.5),  # Second plane
-            Plane(declination=25, azimuth=90, kwp=1.0),   # Third plane
+            Plane(declination=25, azimuth=90, kwp=1.0),  # Third plane
         ],
     ) as forecast:
         estimate = await forecast.estimate()
