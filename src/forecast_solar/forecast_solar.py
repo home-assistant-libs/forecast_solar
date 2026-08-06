@@ -35,6 +35,7 @@ class ForecastSolar:
     damping_evening: float | None = None
     horizon: str | None = None
     planes: list[Plane] | None = None
+    time: str = "utc"
 
     session: ClientSession | None = None
     ratelimit: Ratelimit | None = None
@@ -195,7 +196,9 @@ class ForecastSolar:
             A Estimate object, with a estimated production forecast.
 
         """
-        params = {"time": "utc", "damping": str(self.damping)}
+        params = {"damping": str(self.damping)}
+        if self.time is not None:
+            params["time"] = str(self.time)
         if self.inverter is not None:
             params["inverter"] = str(self.inverter)
         if self.horizon is not None:
