@@ -137,9 +137,19 @@ class Estimate:
     @property
     def energy_current_hour(self) -> int:
         """Return the estimated energy production for the current hour."""
+        # `wh_period` entries are keyed by the *end* of the period they
+        # cover (e.g. the entry timestamped 11:00 holds the production
+        # for 10:00-11:00), so the window has to be shifted a microsecond
+        # forward on both ends: otherwise the entry for the hour that
+        # just ended (timestamped exactly at hour_start) is picked up
+        # instead, and the entry that actually covers the current hour
+        # (timestamped exactly at hour_start + 1h) is excluded by the
+        # upper bound. On public/free accounts, where `wh_period` only
+        # has one entry per hour, that made this always return 0.
+        hour_start = self.now().replace(minute=0, second=0, microsecond=0)
         return _interval_value_sum(
-            self.now().replace(minute=0, second=0, microsecond=0),
-            self.now().replace(minute=0, second=0, microsecond=0) + timedelta(hours=1),
+            hour_start + timedelta(microseconds=1),
+            hour_start + timedelta(hours=1, microseconds=1),
             self.wh_period,
         )
 

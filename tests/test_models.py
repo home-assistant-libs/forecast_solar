@@ -42,7 +42,10 @@ async def test_estimated_forecast(
 
     assert forecast.power_production_now == 773
     assert forecast.energy_production_today_remaining == 4144
-    assert forecast.energy_current_hour == 821
+    # wh_period is keyed by the end of each period, so at exactly 12:00
+    # "this hour" (12:00-13:00) is the entry timestamped 13:00, not 12:00
+    # (which is the hour that just ended).
+    assert forecast.energy_current_hour == 742
 
     assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
         "2024-04-26T11:00:00+02:00"
@@ -88,7 +91,10 @@ async def test_estimated_forecast_with_subscription(
 
     assert forecast.power_production_now == 92
     assert forecast.energy_production_today_remaining == 5783
-    assert forecast.energy_current_hour == 96
+    # 30-minute resolution: "this hour" (07:00-08:00) is the sum of the
+    # periods ending at 07:30 and 08:00, not the periods ending at 07:00
+    # and 07:30.
+    assert forecast.energy_current_hour == 153
 
     assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
         "2024-04-27T13:30:00+02:00"
@@ -301,3 +307,37 @@ def test_peak_production_time_filters_peak_by_date() -> None:
     assert forecast.peak_production_time(date(2024, 4, 26)) == datetime.fromisoformat(
         "2024-04-26T00:00:00+02:00"
     )
+
+
+@pytest.mark.freeze_time("2024-04-26T10:29:00+02:00")
+def test_energy_current_hour_public_account_mid_hour() -> None:
+    """Regression test: energy_current_hour must not be 0 mid-hour on a public account.
+
+    On a public/free account, `wh_period` only has one entry per hour,
+    keyed by the *end* of the period it covers. Before this fix,
+    `energy_current_hour` looked for entries in `[hour_start, hour_start
+    + 1h)`, which only ever matched the entry for the *previous* hour
+    (timestamped exactly at hour_start) and always excluded the entry
+    that actually covers the current hour (timestamped exactly at
+    hour_start + 1h). Unless `now` happened to land exactly on the hour,
+    that meant `energy_current_hour` was always 0 for public accounts.
+    """
+    forecast = Estimate(
+        watts={
+            datetime.fromisoformat("2024-04-26T10:00:00+02:00"): 3000,
+            datetime.fromisoformat("2024-04-26T11:00:00+02:00"): 4500,
+        },
+        wh_period={
+            # Production for 09:00-10:00.
+            datetime.fromisoformat("2024-04-26T10:00:00+02:00"): 1800,
+            # Production for 10:00-11:00 - this is "the current hour".
+            datetime.fromisoformat("2024-04-26T11:00:00+02:00"): 3750,
+            # Production for 11:00-12:00.
+            datetime.fromisoformat("2024-04-26T12:00:00+02:00"): 4900,
+        },
+        wh_days={},
+        api_rate_limit=12,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    assert forecast.energy_current_hour == 3750
