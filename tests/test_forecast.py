@@ -2,7 +2,10 @@
 
 # pylint: disable=protected-access
 
+import re
+
 import pytest
+from aiohttp import web
 from aresponses import ResponsesMockServer
 
 from forecast_solar import (
@@ -85,3 +88,38 @@ async def test_content_type(
     )
     with pytest.raises(ForecastSolarError):
         assert await forecast_client._request("test")
+
+
+async def test_estimate_requests_local_time(
+    aresponses: ResponsesMockServer,
+    forecast_client: ForecastSolar,
+) -> None:
+    """Test the estimate is requested in the local timezone.
+
+    With ``time=utc`` the API buckets ``watt_hours_day`` by UTC date, which
+    shifts production across days for non-UTC sites (see #294). Requesting
+    iso8601 keeps the day buckets aligned with the site timezone.
+    """
+    captured: dict[str, str] = {}
+
+    async def handler(request: web.Request) -> web.Response:
+        captured["query"] = request.query.get("time", "")
+        return web.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("forecast.json"),
+        )
+
+    aresponses.add(
+        "api.forecast.solar",
+        re.compile(r"/estimate/.+"),
+        "GET",
+        handler,
+    )
+
+    await forecast_client.estimate()
+    assert captured["query"] == "iso8601"
