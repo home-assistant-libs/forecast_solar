@@ -27,7 +27,7 @@ packages = [
 [tool.poetry.dependencies]
 aiohttp = ">=3.14.3"
 python = "^3.12"
-yarl = ">=1.24.5"
+yarl = ">=1.25.1"
 
 [project.urls]
 homepage = "https://github.com/home-assistant-libs/forecast_solar"
