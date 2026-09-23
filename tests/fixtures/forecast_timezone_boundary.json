@@ -1,0 +1,27 @@
+{
+  "message": {
+    "code": 0,
+    "type": "success",
+    "text": "",
+    "pid": "BoundaryTest",
+    "ratelimit": {
+      "limit": 60,
+      "period": 60
+    },
+    "info": {
+      "timezone": "Europe/Amsterdam"
+    }
+  },
+  "result": {
+    "watts": {
+      "2024-04-26T20:00:00+02:00": 0
+    },
+    "watt_hours_period": {
+      "2024-04-26T20:00:00+02:00": 0
+    },
+    "watt_hours_day": {
+      "2024-04-26": 1000,
+      "2024-04-27": 2000
+    }
+  }
+}
