@@ -1,5 +1,7 @@
 """Text exceptions raised by the Forecast.Solar API client."""
 
+import json
+
 import pytest
 from aresponses import ResponsesMockServer
 
@@ -105,6 +107,50 @@ async def test_status_429(
     )
     with pytest.raises(ForecastSolarRatelimitError):
         assert await forecast_client._request("test")
+
+
+async def test_status_429_without_retry_at(
+    aresponses: ResponsesMockServer,
+    forecast_client: ForecastSolar,
+) -> None:
+    """Test response status 429 when ratelimit has no retry-at key."""
+    aresponses.add(
+        "api.forecast.solar",
+        "/test",
+        "GET",
+        aresponses.Response(
+            status=429,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=json.dumps(
+                {
+                    "message": {
+                        "code": 429,
+                        "text": "Rate limit for API calls reached.",
+                        "ratelimit": {
+                            "zone": "YOUR IP ADDRESS",
+                            "period": 3600,
+                            "limit": 12,
+                        },
+                    }
+                }
+            ),
+        ),
+    )
+    with pytest.raises(ForecastSolarRatelimitError) as exc_info:
+        assert await forecast_client._request("test")
+    assert exc_info.value.reset_at is None
+
+
+def test_ratelimit_error_without_ratelimit_key() -> None:
+    """Test rate limit error without a ratelimit object at all."""
+    err = ForecastSolarRatelimitError(
+        {"code": 429, "text": "Rate limit for API calls reached."}
+    )
+    assert err.reset_at is None
 
 
 async def test_status_502(
