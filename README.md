@@ -162,24 +162,23 @@ Thank you for being involved! :heart_eyes:
 
 ## Setting up development environment
 
-This Python project relies on [Poetry][poetry] as its dependency manager,
+This Python project relies on [uv][uv] as its dependency manager,
 providing comprehensive management and control over project dependencies.
 
 You need at least:
 
 - Python 3.12+
-- [Poetry][poetry-install]
+- [uv][uv-install]
 
 ### Installation
 
 Install all packages, including all development requirements:
 
 ```bash
-poetry install
+uv sync --locked
 ```
 
-_Poetry creates by default an virtual environment where it installs all
-necessary pip packages_.
+_uv creates a project virtual environment in `.venv` and installs the locked dependencies._
 
 ### Prek
 
@@ -187,13 +186,13 @@ This repository uses the [prek][prek] framework, all changes
 are linted and tested with each commit. To setup the prek check, run:
 
 ```bash
-poetry run prek install
+uv run prek install
 ```
 
 And to run all checks and tests manually, use the following command:
 
 ```bash
-poetry run prek run --all-files
+uv run prek run --all-files
 ```
 
 ### Testing
@@ -201,13 +200,13 @@ poetry run prek run --all-files
 It uses [pytest](https://docs.pytest.org/en/stable/) as the test framework. To run the tests:
 
 ```bash
-poetry run pytest
+uv run pytest
 ```
 
 To update the [syrupy](https://github.com/tophat/syrupy) snapshot tests:
 
 ```bash
-poetry run pytest --snapshot-update
+uv run pytest --snapshot-update
 ```
 
 ## License
@@ -254,6 +253,6 @@ SOFTWARE.
 [commits]: https://github.com/home-assistant-libs/forecast_solar/commits/master
 [last-commit-shield]: https://img.shields.io/github/last-commit/home-assistant-libs/forecast_solar.svg?style=for-the-badge
 
-[poetry-install]: https://python-poetry.org/docs/#installation
-[poetry]: https://python-poetry.org
+[uv-install]: https://docs.astral.sh/uv/getting-started/installation/
+[uv]: https://docs.astral.sh/uv/
 [prek]: https://github.com/j178/prek
