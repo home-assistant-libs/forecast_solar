@@ -2,16 +2,16 @@
 name = "forecast-solar"
 version = "0.0.0"
 description = "Asynchronous Python client for getting forecast solar information"
-authors = [{ name="Klaas Schoute", email="<hello@student-techlife.com>"}]
-maintainers = [{name="Klaas Schoute", email="<hello@student-techlife.com>"}]
+authors = [{ name="Klaas Schoute", email="hello@student-techlife.com"}]
+maintainers = [{name="Klaas Schoute", email="hello@student-techlife.com"}]
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 readme = "README.md"
 keywords = ["forecast", "solar", "power", "energy", "api", "async", "client"]
 classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -19,15 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dynamic = ["dependencies"]
-packages = [
-    { include = "forecast_solar", from = "src" },
-]
-
-[tool.poetry.dependencies]
-aiohttp = ">=3.14.3"
-python = "^3.12"
-yarl = ">=1.25.1"
+dependencies = ["aiohttp>=3.14.3", "yarl>=1.25.1"]
 
 [project.urls]
 homepage = "https://github.com/home-assistant-libs/forecast_solar"
@@ -36,19 +28,21 @@ documentation = "https://github.com/home-assistant-libs/forecast_solar"
 "Bug Tracker" = "https://github.com/home-assistant-libs/forecast_solar/issues"
 Changelog = "https://github.com/home-assistant-libs/forecast_solar/releases"
 
-[tool.poetry.group.dev.dependencies]
-aresponses = "3.0.0"
-covdefaults = "2.3.0"
-pre-commit-hooks = "6.0.0"
-prek = "0.5.3"
-pytest = "9.1.1"
-pytest-asyncio = "1.4.0"
-pytest-cov = "7.1.0"
-pytest-freezer = "0.4.9"
-ruff = "0.16.9"
-syrupy = "6.1.1"
-ty = "0.0.84"
-yamllint = "1.38.0"
+[dependency-groups]
+dev = [
+  "aresponses==3.0.0",
+  "covdefaults==2.3.0",
+  "pre-commit-hooks==6.0.0",
+  "prek==0.5.3",
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+  "pytest-cov==7.1.0",
+  "pytest-freezer==0.4.9",
+  "ruff==0.16.9",
+  "syrupy==6.1.1",
+  "ty==0.0.84",
+  "yamllint==1.38.0",
+]
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
@@ -91,5 +85,5 @@ known-first-party = ["forecast_solar"]
 max-complexity = 25
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+build-backend = "uv_build"
+requires = ["uv_build>=0.12.13,<0.13"]
