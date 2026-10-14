@@ -53,4 +53,6 @@ class ForecastSolarRatelimitError(ForecastSolarRequestError):
         """Init a rate limit error."""
         super().__init__(data)
 
-        self.reset_at = datetime.fromisoformat(data["ratelimit"]["retry-at"])
+        # The retry-at value is not always present in the response
+        retry_at = data.get("ratelimit", {}).get("retry-at")
+        self.reset_at = datetime.fromisoformat(retry_at) if retry_at else None
