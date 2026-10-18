@@ -15,6 +15,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+[![OpenSSF Scorecard][scorecard-shield]][scorecard-url]
 
 ## About
 
@@ -240,6 +241,8 @@ SOFTWARE.
 [forecast-subscription]: https://doc.forecast.solar/account_models
 
 <!-- MARKDOWN LINKS & IMAGES -->
+[scorecard-shield]: https://api.scorecard.dev/projects/github.com/home-assistant-libs/forecast_solar/badge
+[scorecard-url]: https://scorecard.dev/viewer/?uri=github.com/home-assistant-libs/forecast_solar
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg?style=for-the-badge
 [contributors-shield]: https://img.shields.io/github/contributors/home-assistant-libs/forecast_solar.svg?style=for-the-badge
 [contributors-url]: https://github.com/home-assistant-libs/forecast_solar/graphs/contributors
