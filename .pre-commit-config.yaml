@@ -113,3 +113,10 @@ repos:
         language: system
         types: [yaml]
         entry: uv run yamllint
+      - id: zizmor
+        name: 🌈 Check GitHub Actions workflows with zizmor
+        language: system
+        types: [yaml]
+        files: ^\.github/workflows/.*\.ya?ml$
+        entry: uv run zizmor --strict-collection
+        require_serial: true
