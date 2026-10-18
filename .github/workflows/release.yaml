@@ -11,16 +11,22 @@ on:
 env:
   DEFAULT_PYTHON: "3.12"
 
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Releasing to PyPi
     runs-on: ubuntu-latest
     environment: release
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: 🏗 Set up uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
@@ -29,12 +35,14 @@ jobs:
       - name: 🐍 Install Python
         run: uv python install
       - name: 🏗 Set package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          version="${{ github.event.release.tag_name }}"
+          version="${RELEASE_TAG}"
           version="${version,,}"
           version="${version#v}"
           uv version --frozen "${version}"
       - name: 🏗 Build package
         run: uv build --no-sources
       - name: 🚀 Publish package to PyPi
-        uses: pypa/gh-action-pypi-publish@v1.14.2
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2

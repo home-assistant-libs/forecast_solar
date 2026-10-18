@@ -10,6 +10,9 @@ on:
 env:
   DEFAULT_PYTHON: "3.12"
 
+permissions:
+  contents: read
+
 jobs:
   pytest:
     name: Python ${{ matrix.python }}
@@ -19,7 +22,9 @@ jobs:
         python: ["3.12", "3.13", "3.14"]
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: 🏗 Set up uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
@@ -35,7 +40,7 @@ jobs:
         if: matrix.python == env.DEFAULT_PYTHON
         run: uv build --no-sources
       - name: ⬆️ Upload coverage artifact
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-${{ matrix.python }}
           path: coverage.xml
@@ -45,11 +50,12 @@ jobs:
     needs: pytest
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: ⬇️ Download coverage data
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       - name: 🏗 Set up uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
@@ -60,7 +66,7 @@ jobs:
       - name: 🏗 Install dependencies
         run: uv sync --locked
       - name: 🚀 Upload coverage report
-        uses: codecov/codecov-action@v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
