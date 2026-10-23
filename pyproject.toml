@@ -38,7 +38,7 @@ dev = [
   "pytest-asyncio==1.4.0",
   "pytest-cov==7.1.0",
   "pytest-freezer==0.4.9",
-  "ruff==0.17.0",
+  "ruff==0.17.1",
   "syrupy==6.1.1",
   "ty==0.0.86",
   "yamllint==1.38.0",
