@@ -6,16 +6,16 @@ authors = [{ name="Klaas Schoute", email="hello@student-techlife.com"}]
 maintainers = [{name="Klaas Schoute", email="hello@student-techlife.com"}]
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 readme = "README.md"
 keywords = ["forecast", "solar", "power", "energy", "api", "async", "client"]
 classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -53,12 +53,15 @@ source = ["forecast_solar"]
 fail_under = 90
 show_missing = true
 
+[tool.ty.environment]
+python-version = "3.13"
+
 [tool.pytest.ini_options]
 addopts = "--cov"
 asyncio_mode = "auto"
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinionated warning on disallowing dynamically typed expressions

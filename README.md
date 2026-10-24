@@ -168,7 +168,7 @@ providing comprehensive management and control over project dependencies.
 
 You need at least:
 
-- Python 3.12+
+- Python 3.13+
 - [uv][uv-install]
 
 ### Installation
