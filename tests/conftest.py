@@ -9,7 +9,7 @@ from forecast_solar import ForecastSolar, Plane
 
 
 @pytest.fixture(name="forecast_client")
-async def client() -> AsyncGenerator[ForecastSolar, None]:
+async def client() -> AsyncGenerator[ForecastSolar]:
     """Return a Forecast.Solar client."""
     async with (
         ClientSession() as session,
@@ -28,7 +28,7 @@ async def client() -> AsyncGenerator[ForecastSolar, None]:
 
 
 @pytest.fixture(name="forecast_key_client")
-async def client_api_key() -> AsyncGenerator[ForecastSolar, None]:
+async def client_api_key() -> AsyncGenerator[ForecastSolar]:
     """Return a Forecast.Solar client."""
     async with (
         ClientSession() as session,
@@ -49,7 +49,7 @@ async def client_api_key() -> AsyncGenerator[ForecastSolar, None]:
 
 
 @pytest.fixture(name="forecast_multi_plane_client")
-async def client_multi_plane() -> AsyncGenerator[ForecastSolar, None]:
+async def client_multi_plane() -> AsyncGenerator[ForecastSolar]:
     """Return a Forecast.Solar client with multiple planes."""
     async with (
         ClientSession() as session,
