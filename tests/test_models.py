@@ -41,8 +41,8 @@ async def test_estimated_forecast(
     assert forecast.energy_production_tomorrow == 5338
 
     assert forecast.power_production_now == 773
-    assert forecast.energy_production_today_remaining == 4144
-    assert forecast.energy_current_hour == 821
+    assert forecast.energy_production_today_remaining == 3323
+    assert forecast.energy_current_hour == 742
 
     assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
         "2024-04-26T11:00:00+02:00"
@@ -51,10 +51,10 @@ async def test_estimated_forecast(
         "2024-04-27T12:00:00+02:00"
     )
 
-    assert forecast.sum_energy_production(1) == 742
-    assert forecast.sum_energy_production(6) == 3093
-    assert forecast.sum_energy_production(12) == 3323
-    assert forecast.sum_energy_production(24) == 5633
+    assert forecast.sum_energy_production(1) == 665
+    assert forecast.sum_energy_production(6) == 2498
+    assert forecast.sum_energy_production(12) == 2581
+    assert forecast.sum_energy_production(24) == 5494
 
 
 @pytest.mark.freeze_time("2024-04-27T07:00:00+02:00")
@@ -87,8 +87,8 @@ async def test_estimated_forecast_with_subscription(
     assert forecast.energy_production_tomorrow == 7507
 
     assert forecast.power_production_now == 92
-    assert forecast.energy_production_today_remaining == 5783
-    assert forecast.energy_current_hour == 96
+    assert forecast.energy_production_today_remaining == 5748
+    assert forecast.energy_current_hour == 153
 
     assert forecast.power_highest_peak_time_today == datetime.fromisoformat(
         "2024-04-27T13:30:00+02:00"
@@ -97,10 +97,10 @@ async def test_estimated_forecast_with_subscription(
         "2024-04-28T14:30:00+02:00"
     )
 
-    assert forecast.sum_energy_production(1) == 216
-    assert forecast.sum_energy_production(6) == 2802
-    assert forecast.sum_energy_production(12) == 5582
-    assert forecast.sum_energy_production(24) == 5784
+    assert forecast.sum_energy_production(1) == 279
+    assert forecast.sum_energy_production(6) == 3029
+    assert forecast.sum_energy_production(12) == 5548
+    assert forecast.sum_energy_production(24) == 5781
 
 
 @pytest.mark.freeze_time("2024-04-27T07:00:00+02:00")
@@ -132,10 +132,10 @@ async def test_estimated_forecast_with_subscription_and_actual_value(
     assert forecast.energy_production_today == 5788
     assert forecast.energy_production_tomorrow == 7507
 
-    assert forecast.sum_energy_production(1) == 216
-    assert forecast.sum_energy_production(6) == 2802
-    assert forecast.sum_energy_production(12) == 5582
-    assert forecast.sum_energy_production(24) == 5784
+    assert forecast.sum_energy_production(1) == 279
+    assert forecast.sum_energy_production(6) == 3029
+    assert forecast.sum_energy_production(12) == 5548
+    assert forecast.sum_energy_production(24) == 5781
 
 
 async def test_api_key_validation(
@@ -301,3 +301,33 @@ def test_peak_production_time_filters_peak_by_date() -> None:
     assert forecast.peak_production_time(date(2024, 4, 26)) == datetime.fromisoformat(
         "2024-04-26T00:00:00+02:00"
     )
+
+
+@pytest.mark.freeze_time("2024-04-26T20:30:00+02:00")
+def test_energy_values_are_keyed_by_period_end() -> None:
+    """Test each energy value counts for the period that ends at its key.
+
+    The last key of the day is sunset: the 19 Wh produced between 20:00
+    and sunset belong to the 20:00-21:00 hour, the 64 Wh keyed 20:00 to
+    the hour before.
+    """
+    forecast = Estimate(
+        watts={},
+        wh_period={
+            datetime.fromisoformat("2024-04-26T19:00:00+02:00"): 147,
+            datetime.fromisoformat("2024-04-26T20:00:00+02:00"): 64,
+            datetime.fromisoformat("2024-04-26T20:59:23+02:00"): 19,
+            datetime.fromisoformat("2024-04-27T06:18:15+02:00"): 0,
+            datetime.fromisoformat("2024-04-27T07:00:00+02:00"): 40,
+            datetime.fromisoformat("2024-04-27T08:00:00+02:00"): 230,
+        },
+        wh_days={},
+        api_rate_limit=10,
+        api_timezone="Europe/Amsterdam",
+    )
+
+    assert forecast.energy_current_hour == 19
+    assert forecast.energy_production_today_remaining == 19
+    assert forecast.sum_energy_production(1) == 0
+    assert forecast.sum_energy_production(10) == 40
+    assert forecast.sum_energy_production(11) == 270
