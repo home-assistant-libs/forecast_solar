@@ -26,15 +26,19 @@ def _timed_value(at: datetime, data: dict[datetime, int]) -> int | None:
 def _interval_value_sum(
     interval_begin: datetime, interval_end: datetime, data: dict[datetime, int]
 ) -> int:
-    """Return the sum of values in interval."""
+    """Return the sum of values in interval.
+
+    The API keys each value by the end of its period, so the interval
+    includes its end and excludes its begin.
+    """
     total = 0
 
     for timestamp, wh in data.items():
         # Skip all until this hour
-        if timestamp < interval_begin:
+        if timestamp <= interval_begin:
             continue
 
-        if timestamp >= interval_end:
+        if timestamp > interval_end:
             break
 
         total += wh
@@ -174,10 +178,12 @@ class Estimate:
 
     def sum_energy_production(self, period_hours: int) -> int:
         """Return the sum of the energy production."""
-        now = self.now().replace(minute=59, second=59, microsecond=999)
-        until = now + timedelta(hours=period_hours)
+        next_hour = self.now().replace(minute=0, second=0, microsecond=0) + timedelta(
+            hours=1
+        )
+        until = next_hour + timedelta(hours=period_hours)
 
-        return _interval_value_sum(now, until, self.wh_period)
+        return _interval_value_sum(next_hour, until, self.wh_period)
 
     @classmethod
     def from_dict(cls: type[Estimate], data: dict[str, Any]) -> Estimate:
