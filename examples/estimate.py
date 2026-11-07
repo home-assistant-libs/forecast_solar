@@ -23,10 +23,11 @@ async def main() -> None:
         except ForecastSolarRatelimitError as err:
             print("Ratelimit reached")
             print(f"Rate limit resets at {err.reset_at}")
-            reset_period = err.reset_at - datetime.now(UTC)
-            # Strip microseconds as they are not informative
-            reset_period -= timedelta(microseconds=reset_period.microseconds)
-            print(f"That's in {reset_period}")
+            if err.reset_at is not None:
+                reset_period = err.reset_at - datetime.now(UTC)
+                # Strip microseconds as they are not informative
+                reset_period -= timedelta(microseconds=reset_period.microseconds)
+                print(f"That's in {reset_period}")
             return
 
         # Uncomment this if you want to see what's in the estimate arrays
