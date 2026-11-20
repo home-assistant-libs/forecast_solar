@@ -34,6 +34,7 @@ class ForecastSolar:
     damping_morning: float | None = None
     damping_evening: float | None = None
     horizon: str | None = None
+    no_sun: bool = False
     planes: list[Plane] | None = None
 
     session: ClientSession | None = None
@@ -200,6 +201,8 @@ class ForecastSolar:
             params["inverter"] = str(self.inverter)
         if self.horizon is not None:
             params["horizon"] = str(self.horizon)
+        if self.no_sun:
+            params["no_sun"] = "1"
         if self.damping_morning is not None and self.damping_evening is not None:
             params["damping_morning"] = str(self.damping_morning)
             params["damping_evening"] = str(self.damping_evening)
