@@ -126,6 +126,41 @@ async def test_estimate_requests_local_time(
     assert captured["query"] == "iso8601"
 
 
+async def test_estimate_no_sun(aresponses: ResponsesMockServer) -> None:
+    """Test the no_sun parameter is sent when enabled."""
+    captured: dict[str, str] = {}
+
+    async def handler(request: web.Request) -> web.Response:
+        captured["no_sun"] = request.query.get("no_sun", "")
+        return web.Response(
+            status=200,
+            headers={
+                "Content-Type": "application/json",
+                "X-Ratelimit-Limit": "10",
+                "X-Ratelimit-Period": "1",
+            },
+            text=load_fixtures("forecast.json"),
+        )
+
+    aresponses.add(
+        "api.forecast.solar",
+        re.compile(r"/estimate/.+"),
+        "GET",
+        handler,
+    )
+
+    async with ForecastSolar(
+        latitude=52.16,
+        longitude=4.47,
+        declination=20,
+        azimuth=10,
+        kwp=2.160,
+        no_sun=True,
+    ) as client:
+        await client.estimate()
+    assert captured["no_sun"] == "1"
+
+
 async def test_estimate_day_buckets_follow_local_timezone(
     aresponses: ResponsesMockServer,
     forecast_client: ForecastSolar,
